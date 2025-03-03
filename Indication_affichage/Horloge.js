@@ -17,6 +17,11 @@ document.addEventListener("DOMContentLoaded", function() {
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
 
+        const heure = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+        const sec = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('clock').textContent = `${heure}:${min}:${sec}`;
+
         const hourDeg = (hours * 15) + (minutes / 4);
         const minuteDeg = (minutes * 6) + (seconds / 10);
         const secondDeg = seconds * 6;
