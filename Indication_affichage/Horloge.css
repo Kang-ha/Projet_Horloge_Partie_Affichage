@@ -31,7 +31,7 @@ body {
 .sec {
     width: 2px;
     height: 160px;
-    background: red;
+    background: rgb(255, 0, 247);
 }
 .center {
     width: 12px;
