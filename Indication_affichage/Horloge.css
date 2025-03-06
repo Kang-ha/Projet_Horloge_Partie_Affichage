@@ -3,7 +3,6 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color:rgb(140, 100, 70);
 }
 .horloge {
     width: 400px;
@@ -11,30 +10,7 @@ body {
     border: 10px solid black;
     border-radius: 50%;
     position: relative;
-    background: rgb(255, 255, 255);
 }
-
-.parties {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-}
-
-.partie {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0.2;
-    clip-path: polygon(50% 50%, 100% 0, 100% 100%, 50% 50%);
-    transform-origin: center;
-}
-
-.matin { background: yellow; transform: rotate(0deg); }
-.midi { background: orange; transform: rotate(72deg); }
-.apresmidi { background: lightblue; transform: rotate(144deg); }
-.soir { background: blue; transform: rotate(216deg); }
-.nuit { background: darkblue; transform: rotate(288deg); }
 
 .hand {
     position: absolute;
@@ -84,4 +60,11 @@ body {
     font-weight: bold;
     text-align: center;
     margin-top: -100px;
+}
+canvas{
+    position: absolute;
+    top: 500;
+    left: 500;
+    width: 320px;
+    height: 320px;
 }
