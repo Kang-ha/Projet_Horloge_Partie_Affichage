@@ -20,8 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
 
-    document.getElementById('clock').textContent = 
-        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        document.getElementById('clock').textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
         const hourDeg = (hours % 24) * 15 + (minutes / 4);
         const minuteDeg = (minutes * 6) + (seconds / 10);
@@ -33,10 +32,22 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     setInterval(updateClock, 1000);
     updateClock();
-    const jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
-        const aujourdHui = new Date().getDay();
-        document.getElementById('jour-actuel').innerText = "Aujourd'hui, c'est " + jours[aujourdHui] + ".";
+    const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+    const aujourdHui = new Date().getDay();
+    document.getElementById('jour-actuel').innerText = "Aujourd'hui, c'est " + jours[aujourdHui-1] + ".";
+
+    const sectionJour = document.getElementById("section-jour");
+    jours.forEach((jour, index) => {
+        let jourDiv = document.createElement("div");
+        jourDiv.classList.add("section-item");
+        if (index === aujourdHui-1) {
+            jourDiv.classList.add("active");
+        }
+        jourDiv.innerText = jour;
+        sectionJour.appendChild(jourDiv);
+    });
+
     function pie(ctx, w, h, datalist, colist) {
         var radius = h / 2 - 5;
         var centerx = w / 2;
