@@ -68,3 +68,7 @@ canvas{
     width: 320px;
     height: 320px;
 }
+.jour {
+    margin-top: 120%;
+    text-align: center;
+}
