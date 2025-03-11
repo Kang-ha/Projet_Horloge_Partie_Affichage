@@ -4,6 +4,7 @@ body {
     align-items: center;
     height: 100vh;
 }
+/*Cadrant de l'horloge*/
 .horloge {
     width: 400px;
     height: 400px;
@@ -19,15 +20,18 @@ body {
     transform-origin: bottom;
     background: black;
 }
+/*Aiguille des heures*/
 .heure {
     width: 8px;
     height: 100px;
 }
+/*Aiguille des minutes*/
 .min {
     width: 6px;
     height: 130px;
     background: gray;
 }
+/*Aiuguille des secondes*/
 .sec {
     width: 2px;
     height: 160px;
@@ -72,6 +76,7 @@ canvas{
     margin-top: 120%;
     text-align: center;
 }
+/*case de la semaine*/
 .section-jour {
     display: flex;
     justify-content: center;
