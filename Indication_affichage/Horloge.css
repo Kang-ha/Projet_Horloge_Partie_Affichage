@@ -55,6 +55,7 @@ body {
     font-weight: bold;
     text-align: center;
 }
+/*Positionnement des nombres*/
 .nombre div {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -76,19 +77,20 @@ canvas{
     margin-top: 120%;
     text-align: center;
 }
-/*case de la semaine*/
 .section-jour {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 20px;
 }
+/*case de la semaine*/
 .section-item {
     padding: 10px 15px;
     border: 1px solid black;
     border-radius: 5px;
     background: lightgray;
 }
+/*case de la semaine active*/
 .section-item.active {
     background: orange;
     font-weight: bold;
