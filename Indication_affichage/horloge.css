@@ -29,13 +29,13 @@ body {
 .min {
     width: 6px;
     height: 130px;
-    background: gray;
+    background: rgb(255, 0, 255);
 }
 /*Aiuguille des secondes*/
 .sec {
     width: 2px;
     height: 160px;
-    background: rgb(255, 0, 247);
+    background: gray;
 }
 .center {
     width: 12px;
