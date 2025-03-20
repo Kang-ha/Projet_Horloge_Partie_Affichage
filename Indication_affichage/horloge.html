@@ -2,27 +2,31 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horloge en 24h</title>
-    <link rel="stylesheet" href="Horloge.css">
-    <script src="Horloge.js"></script>
+    <title>Horloge</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="horloge.js"></script>
+    <link rel="stylesheet" href="horloge.css">
 </head>
 <body>
-    <!-- Affichage de l'horloge -->
-    <canvas id="canvas3" width="300" height="300"></canvas>
-    <div class="horloge">
-        <div class="nombre" id="nombre"></div>
-        <div class="hand">
-            <div class="hand heure" id="heure"></div>
-            <div class="hand min" id="min"></div>
-            <div class="hand sec" id="sec"></div>
+    <div class="clock-container">
+        <canvas id="camembert" width="400" height="400"></canvas>
+        <div class="analog-clock">
+            <div class="hand hour-hand"></div>
+            <div class="hand minute-hand"></div>
+            <div class=" hand second-hand"></div>
+            <div class="center-dot"></div>
         </div>
-        <!-- Affichage de l'heure numérique -->
-        <div class="clock" id="clock">00:00:00</div>
-        <div class="center"></div>
-        <!-- Affichage du jour -->
-        <div id="jour-actuel" class="jour"></div>
-        <div class="section-jour" id="section-jour"></div>
+        <div class="digital-clock">--:--:--</div>
+        <div class="date-display">--/--/----</div>
+        <div class="day-container">
+            <div class="day-box" id="day-0">Lun</div>
+            <div class="day-box" id="day-1">Mar</div>
+            <div class="day-box" id="day-2">Mer</div>
+            <div class="day-box" id="day-3">Jeu</div>
+            <div class="day-box" id="day-4">Ven</div>
+            <div class="day-box" id="day-5">Sam</div>
+            <div class="day-box" id="day-6">Dim</div>
+        </div>
     </div>
 </body>
 </html>
