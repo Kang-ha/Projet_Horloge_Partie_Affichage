@@ -41,20 +41,20 @@ body {
 
 .hour-hand {
     width: 7px;  /* Réduit de 8px à 7px */
-    height: 35%;
-    background: #333;
+    height: 30%;
+    background: #ffffff;
 }
 
 .minute-hand {
     width: 5px;  /* Réduit de 6px à 5px */
-    height: 40%;
-    background: #666;
+    height: 35%;
+    background: #000000;
 }
 
 .second-hand {
     width: 2px;  /* Réduit de 3px à 2px */
-    height: 45%;
-    background: rgb(218, 0, 211);
+    height: 40%;
+    background: rgb(0, 255, 238);
 }
 
 .digital-clock {
@@ -134,4 +134,8 @@ body {
     background: white;
     cursor: pointer;
     font-size: 14px; /* Réduit de 16px à 14px */
+}
+.day-box.selected {
+    background: #333;
+    color: #fff;
 }
