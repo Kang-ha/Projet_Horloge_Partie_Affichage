@@ -4,29 +4,103 @@ $(document).ready(function() {
     // Fonction pour positionner les nombres sur l'horloge
     function setupClockNumbers() {
         const clockFace = $('.analog-clock');
-        const radius = 180; // Rayon pour les nombres
-
+        const radius = 195; // Rayon pour les heures
+    
+        // Supprimer les anciens nombres s'ils existent
+        $('.hour-number').remove();
+    
         // Ajouter les nombres 1-24
         for (let i = 1; i <= 24; i++) {
             const angle = (i * 15) - 90; // 15 degrés par heure (360/24)
             const radian = (angle * Math.PI) / 180;
+            
+            // Calculer les positions x et y
             const x = Math.cos(radian) * radius;
             const y = Math.sin(radian) * radius;
-
+    
             const numberDiv = $('<div>')
                 .addClass('hour-number')
                 .text(i)
                 .css({
-                    'left': `${200 + x}px`,
-                    'top': `${200 + y}px`
+                    'left': `${220 + x}px`, // 220 est la moitié de la largeur de l'horloge (440/2)
+                    'top': `${220 + y}px`   // 220 est la moitié de la hauteur de l'horloge (440/2)
                 });
-
+    
             clockFace.append(numberDiv);
         }
     }
-
-    // Appeler la fonction pour configurer les nombres
-    setupClockNumbers();
+    
+    // Modifier aussi la fonction setupMinuteMarkers pour s'assurer qu'elle n'interfère pas
+    function setupMinuteMarkers() {
+        const clockFace = $('.analog-clock');
+        const radius = 230; // Un peu plus grand que le rayon des heures
+        
+        // Supprimer les anciens marqueurs s'ils existent
+        $('.minute-marker, .minute-number').remove();
+    
+        for (let i = 0; i < 60; i++) {
+            const angle = (i * 6) - 90; // 6 degrés par minute (360/60)
+            const radian = (angle * Math.PI) / 180;
+    
+            const minuteMarker = $('<div>')
+                .addClass('minute-marker')
+                .css({
+                    'transform': `rotate(${angle + 90}deg)`,
+                    'left': '219px',
+                    'top': '-5px'
+                });
+    
+            if (i % 5 === 0) {
+                const numberRadius = radius + 15;
+                const numberX = Math.cos(radian) * numberRadius;
+                const numberY = Math.sin(radian) * numberRadius;
+                
+                const minuteNumber = $('<div>')
+                    .addClass('minute-number')
+                    .text(i)
+                    .css({
+                        'left': `${220 + numberX}px`,
+                        'top': `${220 + numberY}px`
+                    });
+    
+                clockFace.append(minuteNumber);
+                minuteMarker.css('height', '15px');
+            }
+    
+            clockFace.append(minuteMarker);
+        }
+    }
+    
+    // Assurez-vous que ces fonctions sont appelées dans le bon ordre
+    $(document).ready(function() {
+        console.log("Document ready");
+        
+        // D'abord dessiner le camembert
+        drawCamembert();
+        
+        // Ensuite configurer les nombres d'heures
+        setupClockNumbers();
+        
+        // Puis ajouter les marqueurs de minutes
+        setupMinuteMarkers();
+        
+        // Première mise à jour de l'horloge
+        updateClockSimple();
+        
+        // Mise à jour toutes les secondes
+        setInterval(updateClockSimple, 1000);
+    });
+    
+    // Ajuster aussi la fonction drawCamembert pour la nouvelle taille
+    function drawCamembert() {
+        const canvas = document.getElementById('camembert');
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = canvas.width / 2 - 10; // Réduire légèrement le rayon pour éviter le débordement
+    
+        // ... reste de la fonction drawCamembert ...
+    }
 
     // Fonction pour dessiner le camembert
     function drawCamembert() {
