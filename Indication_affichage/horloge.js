@@ -97,51 +97,127 @@ $(document).ready(function() {
         const ctx = canvas.getContext('2d');
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
-        const radius = canvas.width / 2 - 10; // Réduire légèrement le rayon pour éviter le débordement
+        const radius = canvas.width / 2 - 10;
     
-        // ... reste de la fonction drawCamembert ...
-    }
-
-    // Fonction pour dessiner le camembert
-    function drawCamembert() {
-        const canvas = document.getElementById('camembert');
-        const ctx = canvas.getContext('2d');
-        const segments = [
-            { start: 22, end: 8, color: 'blue' },   // 22h à 8h
-            { start: 8, end: 12, color: 'green' },  // 8h à 12h
-            { start: 12, end: 14, color: 'yellow' },// 12h à 14h
-            { start: 14, end: 18, color: 'orange' },// 14h à 18h
-            { start: 18, end: 22, color: 'red' }    // 18h à 22h
-        ];
-
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const radius = canvas.width / 2;
-
-        function drawSegment(startHour, endHour, color) {
-            const startAngle = (startHour - 3) * (Math.PI / 12);
-            const endAngle = (endHour - 3) * (Math.PI / 12);
-
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
-            ctx.closePath();
-            ctx.fillStyle = color;
-            ctx.fill();
+        // Effacer le canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+        // Fonction pour convertir les heures en angles (en radians)
+        function hoursToRadians(hours) {
+            // Convertir les heures en angle (360 degrés / 24 heures = 15 degrés par heure)
+            // Soustraire 90 degrés (π/2) pour aligner sur midi
+            return (hours * 15 - 90) * Math.PI / 180;
         }
 
+        function getPointOnCircle(hours, radius) {
+            const angle = hoursToRadians(hours);
+            return {
+                x: centerX + radius * Math.cos(angle),
+                y: centerY + radius * Math.sin(angle)
+            };
+        }
+    
+        // Définir les segments avec leurs heures exactes
+        const segments = [
+            { start: 0, end: 8, color: 'rgb(0, 0, 255)' },    // Nuit : 24h à 8h (bleu)
+            { start: 8, end: 12, color: 'rgb(0, 255, 0)' },    // Matin : 8h à 12h (vert)
+            { start: 12, end: 14, color: 'rgb(255, 255, 0)' }, // Midi : 12h à 14h (jaune)
+            { start: 14, end: 18, color: 'rgb(255, 166, 0)' }, // Après-midi : 14h à 18h (orange)
+            { start: 18, end: 22, color: 'rgb(255, 0, 0)' },    // Soir : 18h à 22h (rouge)
+            { start: 22, end: 24, color: 'rgb(0, 0, 255)' }    // Nuit : 22h à 24h
+        ];
+        
+        // Dessiner chaque segment
         segments.forEach(segment => {
-            const start = segment.start;
-            const end = segment.end;
-
-            if (start < end) {
-                drawSegment(start, end, segment.color);
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+    
+            let startAngle = hoursToRadians(segment.start);
+            let endAngle = hoursToRadians(segment.end);
+    
+            // Ajuster pour le segment qui traverse minuit
+            if (segment.start > segment.end) {
+                // Dessiner en deux parties
+                // Première partie : de l'heure de début à minuit
+                ctx.arc(centerX, centerY, radius, startAngle, hoursToRadians(24));
+                ctx.lineTo(centerX, centerY);
+                ctx.fill();
+    
+                // Deuxième partie : de minuit à l'heure de fin
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, hoursToRadians(0), endAngle);
             } else {
-                drawSegment(start, 24, segment.color);
-                drawSegment(0, end, segment.color);
+                // Segment normal
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
             }
+    
+            ctx.lineTo(centerX, centerY);
+            ctx.fillStyle = segment.color;
+            ctx.fill();
         });
+        function drawSimpleSun(x, y) {
+            ctx.save();
+            ctx.translate(x, y);
+        
+            // Cercle du soleil
+            ctx.beginPath();
+            ctx.arc(0, 0, 15, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFD700';
+            ctx.fill();
+        
+            // Rayons simples
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 8; i++) {
+                const angle = (i * Math.PI) / 4;
+                ctx.beginPath();
+                ctx.moveTo(Math.cos(angle) * 15, Math.sin(angle) * 15);
+                ctx.lineTo(Math.cos(angle) * 22, Math.sin(angle) * 22);
+                ctx.stroke();
+            }
+        
+            ctx.restore();
+        }
+
+    // Fonction pour dessiner une simple lune (22h)
+    function drawSimpleMoon(x, y) {
+        ctx.save();
+        ctx.translate(x, y);
+        
+        // Cercle de la lune
+        ctx.beginPath();
+        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+        
+        // Ombre pour créer le croissant
+        ctx.beginPath();
+        ctx.arc(-3, 0, 13, 0, Math.PI * 2);
+        ctx.fillStyle = '#1a237e';
+        ctx.fill();
+        
+        ctx.restore();
     }
+    
+        // Calculer les positions du soleil et de la lune
+        const sunrisePos = getPointOnCircle(8, radius + 10);
+        const moonrisePos = getPointOnCircle(22, radius + 10);
+        
+        // Dessiner le soleil levant et la lune levante
+        drawSunrise(sunrisePos.x, sunrisePos.y);
+        drawMoonrise(moonrisePos.x, moonrisePos.y);
+    }
+    
+    // Assurez-vous d'appeler drawCamembert() au chargement et à chaque mise à jour
+    $(document).ready(function() {
+        console.log("Document ready");
+        drawCamembert();
+        setupClockNumbers();
+        setupMinuteMarkers();
+        updateClockSimple();
+        setInterval(updateClockSimple, 1000);
+    });
 
     // Fonction simplifiée pour mettre à jour l'horloge
     function updateClockSimple() {
