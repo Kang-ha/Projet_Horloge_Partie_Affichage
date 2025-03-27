@@ -94,11 +94,11 @@ $(document).ready(function() {
     // Ajuster aussi la fonction drawCamembert pour la nouvelle taille
     function drawCamembert() {
         const canvas = document.getElementById('camembert');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d');    //2d = graphique
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
         const radius = canvas.width / 2 - 10;
-    
+        
         // Effacer le canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     
@@ -119,14 +119,66 @@ $(document).ready(function() {
     
         // Définir les segments avec leurs heures exactes
         const segments = [
-            { start: 0, end: 8, color: 'rgb(0, 0, 255)' },    // Nuit : 24h à 8h (bleu)
-            { start: 8, end: 12, color: 'rgb(0, 255, 0)' },    // Matin : 8h à 12h (vert)
-            { start: 12, end: 14, color: 'rgb(255, 255, 0)' }, // Midi : 12h à 14h (jaune)
-            { start: 14, end: 18, color: 'rgb(255, 166, 0)' }, // Après-midi : 14h à 18h (orange)
-            { start: 18, end: 22, color: 'rgb(255, 0, 0)' },    // Soir : 18h à 22h (rouge)
-            { start: 22, end: 24, color: 'rgb(0, 0, 255)' }    // Nuit : 22h à 24h
+            { start: 22, end: 8, color: 'blue' },    // Nuit : 24h à 8h (bleu)
+            { start: 8, end: 12, color: 'green' },    // Matin : 8h à 12h (vert)
+            { start: 12, end: 14, color: 'yellow' }, // Midi : 12h à 14h (jaune)
+            { start: 14, end: 18, color: 'orange' }, // Après-midi : 14h à 18h (orange)
+            { start: 18, end: 22, color: 'red' },    // Soir : 18h à 22h (rouge)
+            { start: 22, end: 24, color: 'blue' }    // Nuit : 22h à 24h
         ];
         
+        // Fonction pour dessiner un simple soleil (8h)
+    function drawSimpleSun(x, y) {
+        ctx.save();
+        ctx.translate(x, y);
+        
+        // Cercle du soleil
+        ctx.beginPath();
+        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFD700';
+        ctx.fill();
+        
+        // Rayons simples
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 8; i++) {
+            const angle = (i * Math.PI) / 4;
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(angle) * 15, Math.sin(angle) * 15);
+            ctx.lineTo(Math.cos(angle) * 22, Math.sin(angle) * 22);
+            ctx.stroke();
+        }
+        
+        ctx.restore();
+    }
+
+    // Fonction pour dessiner une simple lune (22h)
+    function drawSimpleMoon(x, y) {
+        ctx.save();
+        ctx.translate(x, y);
+        
+        // Cercle de la lune
+        ctx.beginPath();
+        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+        
+        // Ombre pour créer le croissant
+        ctx.beginPath();
+        ctx.arc(-3, 0, 13, 0, Math.PI * 2);
+        ctx.fillStyle = '#1a237e';
+        ctx.fill();
+        
+        ctx.restore();
+    }
+
+    // Calculer les positions et dessiner les icônes
+    const sunPosition = getPointOnCircle(8, radius + 20);
+    const moonPosition = getPointOnCircle(22, radius + 15);
+    
+    drawSimpleSun(sunPosition.x, sunPosition.y);
+    drawSimpleMoon(moonPosition.x, moonPosition.y);
+    
         // Dessiner chaque segment
         segments.forEach(segment => {
             ctx.beginPath();
@@ -134,7 +186,7 @@ $(document).ready(function() {
     
             let startAngle = hoursToRadians(segment.start);
             let endAngle = hoursToRadians(segment.end);
-    
+
             // Ajuster pour le segment qui traverse minuit
             if (segment.start > segment.end) {
                 // Dessiner en deux parties
@@ -156,57 +208,6 @@ $(document).ready(function() {
             ctx.fillStyle = segment.color;
             ctx.fill();
         });
-        function drawSimpleSun(x, y) {
-            ctx.save();
-            ctx.translate(x, y);
-        
-            // Cercle du soleil
-            ctx.beginPath();
-            ctx.arc(0, 0, 15, 0, Math.PI * 2);
-            ctx.fillStyle = '#FFD700';
-            ctx.fill();
-        
-            // Rayons simples
-            ctx.strokeStyle = '#FFD700';
-            ctx.lineWidth = 2;
-            for (let i = 0; i < 8; i++) {
-                const angle = (i * Math.PI) / 4;
-                ctx.beginPath();
-                ctx.moveTo(Math.cos(angle) * 15, Math.sin(angle) * 15);
-                ctx.lineTo(Math.cos(angle) * 22, Math.sin(angle) * 22);
-                ctx.stroke();
-            }
-        
-            ctx.restore();
-        }
-
-    // Fonction pour dessiner une simple lune (22h)
-    function drawSimpleMoon(x, y) {
-        ctx.save();
-        ctx.translate(x, y);
-        
-        // Cercle de la lune
-        ctx.beginPath();
-        ctx.arc(0, 0, 15, 0, Math.PI * 2);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fill();
-        
-        // Ombre pour créer le croissant
-        ctx.beginPath();
-        ctx.arc(-3, 0, 13, 0, Math.PI * 2);
-        ctx.fillStyle = '#1a237e';
-        ctx.fill();
-        
-        ctx.restore();
-    }
-    
-        // Calculer les positions du soleil et de la lune
-        const sunrisePos = getPointOnCircle(8, radius + 10);
-        const moonrisePos = getPointOnCircle(22, radius + 10);
-        
-        // Dessiner le soleil levant et la lune levante
-        drawSunrise(sunrisePos.x, sunrisePos.y);
-        drawMoonrise(moonrisePos.x, moonrisePos.y);
     }
     
     // Assurez-vous d'appeler drawCamembert() au chargement et à chaque mise à jour
@@ -218,6 +219,7 @@ $(document).ready(function() {
         updateClockSimple();
         setInterval(updateClockSimple, 1000);
     });
+    
 
     // Fonction simplifiée pour mettre à jour l'horloge
     function updateClockSimple() {
