@@ -97,16 +97,16 @@ void attenteDemarrage() {
     M5.Lcd.setTextColor(WHITE);
     M5.Lcd.setTextSize(2);
     M5.Lcd.setCursor(45, 20);
-    M5.Lcd.println(normalizeText("Démarrage auto dans:"));
+    M5.Lcd.println(normalizeText("Démarrage auto dans"));
 
     unsigned long startTime = millis();
-    int lastRemaining = 30;
+    int lastRemaining = 10;
 
-    while (millis() - startTime < 30000) {
+    while (millis() - startTime < 10000) {
         M5.update();
 
         // Calcul du temps restant
-        int remainingTime = 30 - ((millis() - startTime) / 1000);
+        int remainingTime = 10 - ((millis() - startTime) / 1000);
         
         // Mise à jour du texte SEULEMENT si le temps change
         if (remainingTime != lastRemaining) {
@@ -121,14 +121,14 @@ void attenteDemarrage() {
         }
 
         // 🟩 **Affichage de la barre de progression**
-        int progress = map(remainingTime, 0, 30, 0, 220);
+        int progress = map(remainingTime, 0, 10, 0, 220);
         M5.Lcd.fillRoundRect(50, 120, 220, 20, 5, DARKGREY); // Fond
         M5.Lcd.fillRoundRect(50, 120, progress, 20, 5, GREEN); // Barre verte
 
         // 🔹 **Si un bouton est pressé, on interrompt l'attente et on affiche le menu**
         if (M5.BtnA.wasPressed() || M5.BtnB.wasPressed() || M5.BtnC.wasPressed()) {
             currentState = MENU_PRINCIPAL;
-            String titleText = normalizeText("Choisissez un menu :");
+            String titleText = normalizeText("Choisissez un menu");
             drawSingleOption(titleText.c_str(), menuMain[selectedOption]);
             return;
         }
@@ -136,7 +136,7 @@ void attenteDemarrage() {
         delay(100); // Rafraîchissement toutes les 100ms
     }
 
-    // ✅ **Si aucun bouton n'est pressé après 30s, on démarre le fonctionnement principal**
+    // ✅ **Si aucun bouton n'est pressé après 10s, on démarre le fonctionnement principal**
     startDiffuseur();
 }
 
@@ -149,7 +149,7 @@ void setup() {
 
     currentState = MENU_PRINCIPAL;
     selectedOption = 0;
-    drawSingleOption("Choisissez un menu :", menuMain[selectedOption]);
+    drawSingleOption("Choisissez un menu", menuMain[selectedOption]);
 
     attenteDemarrage(); // **Ajout de la temporisation au démarrage**
 }
@@ -162,17 +162,17 @@ void loop() {
     if (currentState == MENU_PRINCIPAL) {
         if (M5.BtnA.wasPressed()) {
             selectedOption = (selectedOption - 1 + numOptionsMain) % numOptionsMain;
-            drawSingleOption("Choisissez un menu :", menuMain[selectedOption]);
+            drawSingleOption("Choisissez un menu", menuMain[selectedOption]);
         }
         if (M5.BtnC.wasPressed()) {
             selectedOption = (selectedOption + 1) % numOptionsMain;
-            drawSingleOption("Choisissez un menu :", menuMain[selectedOption]);
+            drawSingleOption("Choisissez un menu", menuMain[selectedOption]);
         }
         if (M5.BtnB.wasReleased()) {
             if (selectedOption == 0) {
                 currentState = MENU_TESTS;
                 selectedOption = 0;
-                drawSingleOption("Choisissez un test :", menuTests[selectedOption]);
+                drawSingleOption("Choisissez un test", menuTests[selectedOption]);
             } else if (selectedOption == 1) {
                 currentState = PARAMETRES;
                 showParameters();
@@ -184,17 +184,17 @@ void loop() {
     else if (currentState == MENU_TESTS) {
         if (M5.BtnA.wasPressed()) {
             selectedOption = (selectedOption - 1 + numOptionsTest + 1) % (numOptionsTest + 1);
-            drawSingleOption("Choisissez un test :", menuTests[selectedOption]);
+            drawSingleOption("Choisissez un test", menuTests[selectedOption]);
         }
         if (M5.BtnC.wasPressed()) {
             selectedOption = (selectedOption + 1) % (numOptionsTest + 1);
-            drawSingleOption("Choisissez un test :", menuTests[selectedOption]);
+            drawSingleOption("Choisissez un test", menuTests[selectedOption]);
         }
         if (M5.BtnB.wasReleased()) {
             if (selectedOption == numOptionsTest) { // Retour au menu principal
                 currentState = MENU_PRINCIPAL;
                 selectedOption = 0;
-                drawSingleOption("Choisissez un menu :", menuMain[selectedOption]);
+                drawSingleOption("Choisissez un menu", menuMain[selectedOption]);
             } else { // Lancer un test
                 currentState = TEST_EN_COURS;
 
@@ -229,7 +229,7 @@ void loop() {
         if (M5.BtnB.wasReleased()) {
             currentState = MENU_TESTS;
             selectedOption = 0;
-            drawSingleOption("Choisissez un test :", menuTests[selectedOption]);
+            drawSingleOption("Choisissez un test", menuTests[selectedOption]);
         }
     }
 
@@ -238,7 +238,7 @@ void loop() {
         if (M5.BtnB.wasReleased()) {
             currentState = MENU_PRINCIPAL;
             selectedOption = 0;
-            drawSingleOption("Choisissez un menu :", menuMain[selectedOption]);
+            drawSingleOption("Choisissez un menu", menuMain[selectedOption]);
         }
     }
 }
