@@ -3,20 +3,25 @@
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
+#include <ctime>
+
+// Fonction pour obtenir l'heure actuelle en minutes depuis minuit
+int getCurrentTimeInMinutes() {
+    std::time_t now = std::time(nullptr);
+    std::tm* localTime = std::localtime(&now);
+    return localTime->tm_hour * 60 + localTime->tm_min;
+}
 
 // Fonction pour exécuter la synthèse vocale avec eSpeak
 void speakText(const char* text) {
-    if (text == NULL || strlen(text) == 0) {
+    if (text == nullptr || strlen(text) == 0) {
         std::cout << "Aucun commentaire à lire." << std::endl;
         return;
     }
 
-    // Construction de la commande eSpeak
     std::string command = "espeak -v fr \"";
     command += text;
-    command += "\" 2>/dev/null"; // Redirection des erreurs pour plus de propreté
-
-    // Exécution de la commande
+    command += "\" 2>/dev/null";
     system(command.c_str());
 }
 
@@ -27,43 +32,58 @@ int main() {
 
     // Paramètres de connexion à la base de données
     const char* server = "localhost";
-    const char* user = "admineleve";
-    const char* password = "ieufdl";
-    const char* database = "projet_horloge";
+    const char* user = "root";
+    const char* password = "horloge";
+    const char* database = "affichage_horloge";
 
     // Initialisation de la connexion
-    conn = mysql_init(NULL);
+    conn = mysql_init(nullptr);
 
     // Connexion à la base de données
-    if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0)) {
+    if (!mysql_real_connect(conn, server, user, password, database, 0, nullptr, 0)) {
         std::cerr << "Erreur de connexion à MySQL: " << mysql_error(conn) << std::endl;
         return 1;
     }
 
-    // Reqête SQL pour récupérer les commentaires
-    if (mysql_query(conn, "SELECT commentaire FROM evenements WHERE commentaire IS NOT NULL")) {
-        std::cerr << "Erreur MySQL: " << mysql_error(conn) << std::endl;
-        mysql_close(conn);
-        return 1;
-    }
-
-    res = mysql_use_result(conn);
-
-    // Lecture et synthèse vocale des résultats
-    std::cout << "Lecture des commentaires..." << std::endl;
-    while ((row = mysql_fetch_row(res)) != NULL) {
-        if (row[0] != NULL) {
-            std::cout << "Commentaire: " << row[0] << std::endl;
-            speakText(row[0]);
-            // Pause entre les commentaires
-            sleep(1);
+    // Boucle principale pour vérifier l'heure régulièrement
+    while (true) {
+        int currentMinutes = getCurrentTimeInMinutes();
+        int targetMinutes = currentMinutes + 15; // 15 minutes dans le futur
+        
+        // Requête SQL pour récupérer les commentaires programmés dans 15 minutes
+        std::string query = "SELECT commentaire FROM evenements WHERE debut = " + 
+                           std::to_string(targetMinutes) + 
+                           " AND commentaire IS NOT NULL";
+        
+        if (mysql_query(conn, query.c_str())) {
+            std::cerr << "Erreur MySQL: " << mysql_error(conn) << std::endl;
+            mysql_close(conn);
+            return 1;
         }
+
+        res = mysql_use_result(conn);
+
+        // Lecture et synthèse vocale des résultats
+        bool commentFound = false;
+        while ((row = mysql_fetch_row(res)) != nullptr) {
+            if (row[0] != nullptr) {
+                int targetHour = targetMinutes / 60;
+                int targetMin = targetMinutes % 60;
+                std::cout << "[Rappel à " << currentMinutes / 60 << "h" << currentMinutes % 60 
+                          << "] Commentaire pour " << targetHour << "h" << targetMin 
+                          << ": " << row[0] << std::endl;
+                speakText(row[0]);
+                commentFound = true;
+            }
+        }
+
+        mysql_free_result(res);
+
+        // Attendre 1 minute avant de vérifier à nouveau
+        sleep(60);
     }
 
-    // Nettoyage
-    mysql_free_result(res);
+    // Nettoyage (en théorie jamais atteint à cause de la boucle infinie)
     mysql_close(conn);
-
-    std::cout << "Lecture terminée." << std::endl;
     return 0;
 }
