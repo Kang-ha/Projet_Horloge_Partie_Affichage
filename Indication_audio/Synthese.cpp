@@ -50,10 +50,11 @@ int main() {
         int currentMinutes = getCurrentTimeInMinutes();
         int targetMinutes = currentMinutes + 15; // 15 minutes dans le futur
         
-        // Requête SQL pour récupérer les commentaires programmés dans 15 minutes
+        // Requête SQL pour récupérer les commentaires programmés dans 15 minutes avec audio activé
         std::string query = "SELECT commentaire FROM evenements WHERE debut = " + 
                            std::to_string(targetMinutes) + 
-                           " AND commentaire IS NOT NULL";
+                           " AND commentaire IS NOT NULL "
+                           "AND audio = 1"; // Seulement si audio est vrai (1)
         
         if (mysql_query(conn, query.c_str())) {
             std::cerr << "Erreur MySQL: " << mysql_error(conn) << std::endl;
@@ -69,7 +70,7 @@ int main() {
             if (row[0] != nullptr) {
                 int targetHour = targetMinutes / 60;
                 int targetMin = targetMinutes % 60;
-                std::cout << "[Rappel à " << currentMinutes / 60 << "h" << currentMinutes % 60 
+                std::cout << "[Rappel audio à " << currentMinutes / 60 << "h" << currentMinutes % 60 
                           << "] Commentaire pour " << targetHour << "h" << targetMin 
                           << ": " << row[0] << std::endl;
                 speakText(row[0]);
@@ -83,7 +84,7 @@ int main() {
         sleep(60);
     }
 
-    // Nettoyage (en théorie jamais atteint à cause de la boucle infinie)
+    // Nettoyage
     mysql_close(conn);
     return 0;
 }
