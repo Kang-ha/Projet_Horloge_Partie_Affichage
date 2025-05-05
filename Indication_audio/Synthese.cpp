@@ -41,9 +41,9 @@ int main() {
 
     // Paramètres de connexion
     const char* server = "localhost";
-    const char* user = "admineleve";
-    const char* password = "ieufdl";
-    const char* database = "projet_horloge";
+    const char* user = "root";
+    const char* password = "horloge";
+    const char* database = "affichage_horloge";
 
     conn = mysql_init(nullptr);
     if (!mysql_real_connect(conn, server, user, password, database, 0, nullptr, 0)) {
