@@ -17,8 +17,16 @@ int getCurrentTimeInMinutes() {
 int getCurrentDayOfWeek() {
     std::time_t now = std::time(nullptr);
     std::tm* localTime = std::localtime(&now);
-    // Convertit de 0-6 (dimanche=0) à 1-7 (lundi=1)
     return localTime->tm_wday == 0 ? 7 : localTime->tm_wday;
+}
+
+// Fonction pour obtenir le numéro de la semaine ISO
+int getCurrentWeekNumber() {
+    std::time_t now = std::time(nullptr);
+    std::tm* localTime = std::localtime(&now);
+    char weekNum[3];
+    strftime(weekNum, sizeof(weekNum), "%V", localTime);
+    return atoi(weekNum);
 }
 
 // Fonction pour exécuter la synthèse vocale avec eSpeak
@@ -51,12 +59,14 @@ int main() {
         return 1;
     }
 
+    int currentWeek = getCurrentWeekNumber(); // Récupère la semaine actuelle
+
     while (true) {
         int currentMinutes = getCurrentTimeInMinutes();
         int currentDay = getCurrentDayOfWeek(); // 1-7 (lundi=1)
         int targetMinutes = currentMinutes + 15;
         
-        std::string query = "SELECT commentaire, jour_semaine FROM evenements "
+        std::string query = "SELECT commentaire, jour_semaine, ecart FROM evenements "
                           "WHERE debut = " + std::to_string(targetMinutes) + 
                           " AND commentaire IS NOT NULL "
                           "AND audio = 1";
@@ -72,20 +82,32 @@ int main() {
         const char* joursNoms[] = {"", "lundi", "mardi", "mercredi", "jeudi", 
                                  "vendredi", "samedi", "dimanche"};
 
-        while (row = mysql_fetch_row(res)) {
-            if (row[0] && row[1] && strlen(row[1]) >= 7) {
-                char jourActive = row[1][currentDay - 1]; // Index 0-6
-                if (jourActive == '1') {
-                    std::cout << "[Rappel " << joursNoms[currentDay] << " " 
-                              << currentMinutes/60 << "h" << currentMinutes%60
-                              << "] " << row[0] << std::endl;
-                    speakText(row[0]);
-                    commentFound = true;
-                }
+        while ((row = mysql_fetch_row(res))) {
+            if (row[0] && row[1] && row[2] && strlen(row[1]) >= 7) {
+                // Vérifie le jour de la semaine
+                if (row[1][currentDay - 1] != '1') continue;
+                
+                // Vérifie l'écart des semaines
+                int ecart = atoi(row[2]);
+                if (ecart > 0 && (currentWeek % (ecart + 1)) != 0) continue;
+                
+                std::cout << "[Rappel " << joursNoms[currentDay] << " " 
+                          << currentMinutes/60 << "h" << currentMinutes%60
+                          << "] " << row[0] << " (Ecart: " << row[2] << " semaines)" << std::endl;
+                speakText(row[0]);
+                commentFound = true;
             }
         }
 
         mysql_free_result(res);
+        
+        // Mise à jour hebdomadaire
+        static int lastWeek = currentWeek;
+        if (currentWeek != lastWeek) {
+            lastWeek = currentWeek;
+            currentWeek = getCurrentWeekNumber(); // Actualise le numéro de semaine
+        }
+
         sleep(60);
     }
 
