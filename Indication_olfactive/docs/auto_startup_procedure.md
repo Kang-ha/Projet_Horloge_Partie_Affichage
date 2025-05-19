@@ -6,18 +6,20 @@ Ce document décrit deux méthodes pour exécuter un script automatiquement au d
 
 ### 1. Méthode Crontab (@reboot)
 
-1. Éditez le crontab de l’utilisateur `pi` :
+1. Éditez le crontab de l’utilisateur (par exemple `pi` ou celui sous lequel tourne votre projet) :
 
    ```bash
    crontab -e
    ```
-2. Ajoutez la ligne suivante en fin de fichier pour lancer votre script au boot :
+2. Ajoutez la ligne suivante en fin de fichier pour lancer votre script au boot, en utilisant une référence relative à votre répertoire cloné :
 
    ```cron
-   @reboot /home/horloge/Horloge/lancer_diffuseur.sh
+   @reboot /bin/bash -c 'cd "$HOME/Projet_Horloge_Partie_Affichage/Indication_olfactive/src/Raspberry" && ./lancer_diffuseur.sh >> "$HOME/Projet_Horloge_Partie_Affichage/Indication_olfactive/logs/diffuseur.log" 2>&1'
    ```
 
    * `@reboot` : directive pour exécuter la commande au démarrage
+   * `cd "$HOME/..."` : change le répertoire vers l’endroit où le dépôt est cloné, quelle que soit la machine
+   * `>> ... 2>&1` : redirige la sortie standard et d’erreur vers un fichier de log
 3. Enregistrez et quittez (`Ctrl+O`, `Entrée`, `Ctrl+X` sous nano).
 4. Vérifiez la présence de la tâche :
 
@@ -34,7 +36,7 @@ Ce document décrit deux méthodes pour exécuter un script automatiquement au d
 
 ### 2. Méthode systemd
 
-1. Créez un fichier de service dans `/etc/systemd/system/diffuseur.service` :
+1. Créez ou modifiez le fichier de service dans `/etc/systemd/system/diffuseur.service` :
 
    ```ini
    [Unit]
@@ -43,19 +45,20 @@ Ce document décrit deux méthodes pour exécuter un script automatiquement au d
 
    [Service]
    Type=simple
-   ExecStart=/home/horloge/Horloge/diffuseur_control
-   WorkingDirectory=/home/horloge/Horloge
+   # Exécution du binaire de contrôle depuis le dossier cloné
+   ExecStart=/bin/bash -c 'cd "$HOME/Projet_Horloge_Partie_Affichage/Indication_olfactive/src/Raspberry" && ./diffuseur_control'
+   WorkingDirectory=$HOME/Projet_Horloge_Partie_Affichage/Indication_olfactive/src/Raspberry
    User=horloge
    Restart=on-failure
    RestartSec=5
-   StandardOutput=append:/home/horloge/Horloge/logs/diffuseur.log
-   StandardError=append:/home/horloge/Horloge/logs/diffuseur_error.log
-   StandardOutput=append:/home/horloge/Horloge/logs/diffuseur.log
-   StandardError=append:/home/horloge/Horloge/logs/diffuseur.log
+   StandardOutput=append:$HOME/Projet_Horloge_Partie_Affichage/Indication_olfactive/logs/diffuseur.log
+   StandardError=append:$HOME/Projet_Horloge_Partie_Affichage/Indication_olfactive/logs/diffuseur_error.log
 
    [Install]
    WantedBy=multi-user.target
    ```
+
+   * Les variables `$HOME` et `cd` garantissent que le chemin s’adapte à l’emplacement du dépôt de chaque clone.
 2. Rechargez la configuration systemd :
 
    ```bash
@@ -75,7 +78,7 @@ Ce document décrit deux méthodes pour exécuter un script automatiquement au d
 
    ```bash
    sudo systemctl status diffuseur.service
-   journalctl -u mon_script.service --since "5 minutes ago"
+   journalctl -u diffuseur.service --since "5 minutes ago"
    ```
 6. Redémarrez pour valider :
 
@@ -85,4 +88,4 @@ Ce document décrit deux méthodes pour exécuter un script automatiquement au d
 
 ---
 
-© Projet Horloge • Partie Affichage - Procédure Automatisation de Script au Boot
+© Projet Horloge • Partie Affichage – Procédure Automatisation de Script au Boot
