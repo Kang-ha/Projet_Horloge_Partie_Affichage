@@ -138,7 +138,7 @@ int isOdeurActiveNow() {
     try {
         sql::Driver* driver = get_driver_instance(); // Récupère le driver MySQL installé sur le système
         std::unique_ptr<sql::Connection> conn(driver->connect("tcp://127.0.0.1:3306", "root", "horloge")); // Établit une connexion à la base locale avec login root
-        conn->setSchema("affichage_horloge"); // Sélectionne la base de données "affichage_horloge"
+        conn->setSchema("projet_horloge"); // Sélectionne la base de données "projet_horloge"
 
         std::time_t now = std::time(nullptr); // Récupère l’heure système actuelle en timestamp
         std::tm* local = std::localtime(&now); // Convertit le timestamp en heure locale (struct tm)
