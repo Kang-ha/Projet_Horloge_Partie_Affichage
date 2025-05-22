@@ -145,6 +145,11 @@
                         </div> 
 
                         <div>
+                            <label for="date">du :</label>
+                            <input type="date" id="date-début" name="date-début">
+                        </div>
+
+                        <div>
                             <label for="date">Jusqu'au :</label>
                             <input type="date" id="date" name="date-fin">
                         </div>
