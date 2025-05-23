@@ -1,0 +1,3 @@
+# .gitattributes
+indication_olfactive/lib/** linguist-vendored
+*.zip linguist-vendored
