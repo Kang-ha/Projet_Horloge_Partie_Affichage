@@ -1,0 +1,136 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #444444;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.horloge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 50px;
+}
+
+.horloge-face {
+  position: relative;
+  width: 360px;
+  height: 360px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 60px;
+}
+
+#myPieChart, #myDoughnutChart {
+  width: 360px !important;
+  height: 360px !important; /* Était "360x" - typo corrigée */
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.horloge-digital {
+  font-size: 2.5em;
+  margin: 10px 0;
+  padding: 15px;
+  background: #333;
+  color: #fff;
+  border-radius: 8px;
+  width: 100%;
+  text-align: center;
+}
+
+.affichage-date {
+  color: white;
+  font-size: 1.5em;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.nombre-heure {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  color: white;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #333;
+  border-radius: 50%;
+  border: 1px solid white;
+  z-index: 15; /* Au-dessus du camembert */
+  transform-origin: center;
+}
+
+/* Ajustement des aiguilles et point central */
+.aiguille {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom center; /* Corrigé */
+  margin-left: -3px; /* Pour centrer l'aiguille */
+}
+
+.aiguille-heure {
+  width: 7px;  /* Réduit de 8px à 7px */
+  height: 30%;
+  background: #ffffff;
+}
+
+.aiguille-minute {
+  width: 5px;  /* Réduit de 6px à 5px */
+  height: 35%;
+  background: #000000;
+}
+
+.aiguille-seconde {
+  width: 2px;  /* Réduit de 3px à 2px */
+  height: 40%;
+  background: rgb(0, 255, 238);
+}
+
+.centre-point {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #333;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20; /* Pour que le point central soit au-dessus des aiguilles */
+}
+
+.jour-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.jour-box {
+  width: 45px;
+  height: 45px;
+  margin: 0 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+}
+
+.jour-box.selected {
+  background: #333;
+  color: #fff;
+}
