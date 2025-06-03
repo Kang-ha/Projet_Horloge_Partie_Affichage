@@ -21,7 +21,7 @@
 // Initialisation des constantes globales
 // =========================
 const char* ssid = "Horloge";                          // Nom du réseau WiFi
-const char* password = "Horloge_Affichage";            // Mot de passe du WiFi
+const char* password = "Horloge_Affichage56";            // Mot de passe du WiFi
 const char* mqtt_server = "192.168.1.117";             // Adresse IP du broker MQTT local
 const char* topicDiffuseur = "horloge/olfactive/diffuseur"; // Topic MQTT pour contrôler le diffuseur
 const char* topicPresence = "horloge/olfactive/presence";   // Topic MQTT pour envoyer l'état de présence
