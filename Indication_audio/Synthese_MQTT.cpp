@@ -63,7 +63,7 @@ void lancerSynthese() {
     const char* server = "localhost";
     const char* user = "root";
     const char* password = "horloge";
-    const char* database = "affichage_horloge";
+    const char* database = "projet_horloge";
 
     conn = mysql_init(nullptr);
     if (!mysql_real_connect(conn, server, user, password, database, 0, nullptr, 0)) {
