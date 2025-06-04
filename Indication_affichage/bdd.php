@@ -14,7 +14,7 @@
             $lien = new PDO("mysql:dbname=".BDD.";charset=utf8",USER, PWD,
                             array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
         } catch (Exception $e) {
-            echo ("Base de donn�es en maintenance");
+            echo ("Base de données en maintenance");
             $lien = null;
             die();
         }
