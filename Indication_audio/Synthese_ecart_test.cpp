@@ -29,7 +29,7 @@ void speakText(const char* text) {
 
 int main() {
     MYSQL *conn = mysql_init(nullptr);
-    const char* db_params[] = {"localhost", "root", "horloge", "affichage_horloge"};
+    const char* db_params[] = {"localhost", "root", "horloge", "projet_horloge"};
     
     if (!mysql_real_connect(conn, db_params[0], db_params[1], db_params[2], db_params[3], 0, nullptr, 0)) {
         std::cerr << "Erreur MySQL: " << mysql_error(conn) << std::endl;
