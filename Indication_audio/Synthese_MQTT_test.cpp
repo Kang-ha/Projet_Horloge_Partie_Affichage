@@ -12,7 +12,7 @@
 // MQTT
 #include <mqtt/async_client.h>
 
-const std::string ADDRESS{"tcp://192.168.1.117:1883"};
+const std::string ADDRESS{"tcp://192.168.1.9:1883"};
 const std::string CLIENT_ID{"SyntheseClient"};
 const std::string TOPIC_PRESENCE{"horloge/olfactive/presence"};
 
@@ -36,7 +36,7 @@ void lancerSynthese() {
     const char* server   = "localhost";
     const char* user     = "root";
     const char* password = "horloge";
-    const char* database = "affichage_horloge";
+    const char* database = "projet_horloge";
 
     conn = mysql_init(nullptr);
     if (!mysql_real_connect(conn, server, user, password, database, 0, nullptr, 0)) {
