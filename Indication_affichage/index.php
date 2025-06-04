@@ -42,7 +42,9 @@
                 <div class="jour-box" id="jour-5">Sam</div>
                 <div class="jour-box" id="jour-6">Dim</div>
             </div>
+            <div class="cache-horloge" id="cacheHorloge"></div>
         </div>
+        
         <script>
             // Mise à jour toutes les 5 secondes sans rechargement
             setInterval(function(){

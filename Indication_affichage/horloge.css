@@ -161,3 +161,20 @@ body {
   font-size: 14px;
   color: #fff;
 }
+
+.cache-horloge {
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    #444444 0deg,
+    #444444 var(--angle-cache, 0deg),
+    transparent var(--angle-cache, 0deg)
+  );
+  border-radius: 50%;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0.6;
+}

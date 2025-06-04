@@ -233,6 +233,8 @@ function majHorlogeSimple() {
     const dayIndex = now.getDay(); // 0=Lundi, 6=Dimanche; // 0 (Dimanche) à 6 (Samedi)
     $('.box-jour').removeClass('selected');
     $(`#jour-${(dayIndex + 6) % 7}`).addClass('selected'); // Ajustement pour commencer à Lundi
+
+    updateCache(now);
 }
 
 $(document).ready(function() {
@@ -267,4 +269,16 @@ function pictogramme(id_picto, minuteDebut, minuteFin){
     pictogramme.style.width = "75%";
     pictogramme.style.height = "75%";
     pictogramme.style.marginTop = "3px";
+}
+
+function updateCache(now) {
+    const cache = document.getElementById('cacheHorloge');
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    const totalMinutes = (hours * 60) + minutes + (seconds / 60);
+    const angle = (totalMinutes / (24 * 60)) * 360;
+
+    cache.style.setProperty('--angle-cache', `${angle}deg`);
 }
