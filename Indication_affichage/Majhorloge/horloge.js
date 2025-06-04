@@ -27,6 +27,16 @@ function horloge(labelNuit, nuit_debut_journee, nuit_fin_journee, couleurnuit,
         cutout: '0%', // Pour un pie chart plein
         circumference: 360 // Cercle complet
     };
+
+    // Création de la légende
+    createLegend([
+        {label: labelNuit, color: couleurnuit},
+        {label: labelMatin, color: couleurmatin},
+        {label: labelMidi, color: couleurmidi},
+        {label: labelApresMidi, color: couleurApresMidi},
+        {label: labelSoir, color: couleursoir}
+    ]);
+
     // R�cup�ration du contexte du canevas
     var ctx = document.getElementById("myPieChart").getContext('2d');
     
@@ -40,6 +50,34 @@ function horloge(labelNuit, nuit_debut_journee, nuit_fin_journee, couleurnuit,
         data: data,
         options: options
     });
+}
+
+function createLegend(items) {
+    // Supprimer l'ancienne légende si elle existe
+    const oldLegend = document.querySelector('.legend-container');
+    if (oldLegend) oldLegend.remove();
+
+    const legendContainer = document.createElement('div');
+    legendContainer.className = 'legend-container';
+
+    items.forEach(item => {
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+
+        const colorBox = document.createElement('div');
+        colorBox.className = 'legend-color';
+        colorBox.style.backgroundColor = item.color;
+
+        const label = document.createElement('span');
+        label.className = 'legend-label';
+        label.textContent = item.label;
+
+        legendItem.appendChild(colorBox);
+        legendItem.appendChild(label);
+        legendContainer.appendChild(legendItem);
+    });
+
+    document.querySelector('.horloge-container').appendChild(legendContainer);
 }
 
 function afficherHorloge() {
