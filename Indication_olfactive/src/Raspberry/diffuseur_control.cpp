@@ -43,13 +43,13 @@ Ce fichier s’exécute en boucle infinie sur la Raspberry Pi. Il agit comme con
 // 📌 Contrôle intelligent de la prise TP-Link Tapo via MQTT & MySQL
 
 // Configuration MQTT
-const std::string ADDRESS{"tcp://192.168.1.117:1883"}; // Adresse du broker MQTT
+const std::string ADDRESS{"tcp://192.168.1.9:1883"}; // Adresse du broker MQTT
 const std::string CLIENT_ID{"TapoControllerCpp"};      // ID du client MQTT
 const std::string TOPIC_DIFFUSEUR{"horloge/olfactive/diffuseur"}; // Topic pour commandes manuelles
 const std::string TOPIC_PRESENCE{"horloge/olfactive/presence"};   // Topic pour détection de présence
 
 // Configuration Tapo
-const std::string IP = "192.168.1.102";                     // IP de la prise connectée
+const std::string IP = "192.168.1.6";                     // IP de la prise connectée
 const std::string USER = "boutin.l@stjolorient.fr";         // Identifiant de connexion Tapo
 const std::string PASS = "Voso1295";                        // Mot de passe Tapo
 
