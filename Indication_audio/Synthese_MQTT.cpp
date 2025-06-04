@@ -12,7 +12,7 @@
 // MQTT
 #include <mqtt/async_client.h>
 
-const std::string ADDRESS{"tcp://192.168.1.117:1883"};
+const std::string ADDRESS{"tcp://192.168.1.9:1883"};
 const std::string CLIENT_ID{"SyntheseClient"};
 const std::string TOPIC_PRESENCE{"horloge/olfactive/presence"};
 
