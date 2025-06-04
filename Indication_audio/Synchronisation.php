@@ -7,7 +7,7 @@
 // Configuration détaillée
 $config = [
     'source' => [
-        'host' => '192.168.1.143', // Adresse du serveur maître
+        'host' => '192.168.1.5', // Adresse du serveur maître
         'port' => 3306,        // Port MySQL
         'username' => 'admineleve',
         'password' => 'ieufdl',
@@ -15,7 +15,7 @@ $config = [
         'charset' => 'utf8mb4'
     ],
     'target' => [
-        'host' => '192.168.1.117', // Adresse du serveur esclave
+        'host' => '192.168.1.9', // Adresse du serveur esclave
         'port' => 3306,
         'username' => 'root',
         'password' => 'horloge',
