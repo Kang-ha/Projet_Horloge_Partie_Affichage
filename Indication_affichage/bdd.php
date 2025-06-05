@@ -191,3 +191,43 @@
         echo "</div>\n";
     }    
 }
+
+function afficherPictogrammes() {
+    global $lien;
+    $nbLigne = 0;
+    bddConnect();
+    try {
+        $req = "SELECT evenements.id AS id_event, debut, duree, pictogrammes.id AS id_img, pictogrammes.image, pictogrammes.nom FROM `evenements` JOIN pictogrammes ON pictogrammes.id = evenements.pictogramme JOIN configurations ON configurations.id_utilisateur = evenements.id_utilisateur  ORDER BY debut ASC;";
+        // echo $req;
+        $res = $lien->query($req);
+        $donnees = array();
+
+        // Parcourir les lignes du résultat et stocker chaque ligne dans un tableau
+        while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+            $donnees[] = $row;
+            $nbLigne++;
+        }
+        // echo $nbLigne;
+        // print_r($donnees);
+
+        for ($i=0; $i < $nbLigne; $i++) { 
+            if($i!=0){echo "\t\t\t\t\t\t\t";}
+            echo "<div class='pictogramme' id='div-picto".$i."' style='transform-origin: left center;'>\n";
+            echo "\t\t\t\t\t\t\t<div class='pre-svg'>\n";
+            echo "\t\t\t\t\t\t\t\t".$donnees[$i]['image']."\n";
+            echo "\t\t\t\t\t\t\t</div>\n";
+            echo "\t\t\t\t\t\t\t</div>\n";
+        }
+
+        echo "\t\t\t\t\t\t\t<script>\n";
+        for ($i=0; $i < $nbLigne; $i++) { 
+            echo "\t\t\t\t\t\t\t\tpictogramme(".$i.",".$donnees[$i]['debut'].", ".($donnees[$i]['debut']+$donnees[$i]['duree']).");\n";
+        }
+        echo "\t\t\t\t\t\t\t</script>\n";
+        
+        return;
+    } catch (Exception $e) {
+        echo "Erreur : " . $e->getMessage();
+        $lien = null;
+    }
+}

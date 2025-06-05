@@ -23,7 +23,13 @@
                 <div class="aiguille aiguille-heure"></div>
                 <div class="aiguille aiguille-minute"></div>
                 <div class="aiguille aiguille-seconde"></div>
-                <div class="centre-point"></div>  
+                <div class="centre-point"></div>
+                
+                <div id="afficherPictogrammes">
+                    <?php
+                     afficherPictogrammes();
+                    ?>
+                </div>
             </div>
             <?php afficherHorloge(); ?>
             <!-- Horloge digitale -->

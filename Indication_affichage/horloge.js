@@ -245,30 +245,31 @@ $(document).ready(function() {
 
 });
 
-function pictogramme(id_picto, minuteDebut, minuteFin){
-    var div_pictogramme = document.getElementById("div-picto"+id_picto);
-    var pictogramme = document.getElementById("div-picto"+id_picto).getElementsByTagName("svg")[0];
-    
-    // console.log(minuteDebut, minuteFin);
-    heureDebut=minuteDebut/60;
-    heureFin=minuteFin/60;
-    // console.log(heureDebut, heureFin);
-    
-    heure=heureDebut+(heureFin-heureDebut)/3;
-    // console.log(heure)
-    
-    ajustement = (minuteFin-minuteDebut)*0.03;
-    if(minuteFin-minuteDebut <= 30) {
-        ajustement=-1;
-    }
-    x=(heure*15-90)+ajustement; // -ajustement pour le décalage sufisant en foction de la taille de l'image et la largeur de l'event
-    // console.log(x, ajustement);
-
-    div_pictogramme.style.transform = "rotate(" + x +"deg)";
-    pictogramme.style.transform ="rotate(" + -x +"deg)";
-    pictogramme.style.width = "75%";
-    pictogramme.style.height = "75%";
-    pictogramme.style.marginTop = "3px";
+function afficherPictogrammes(){
+    var afficherPictogrammes = document.getElementById("afficherPictogrammes");
+    var afficherpictogrammes = $('#afficherPictogrammes');
+    $.ajax({
+        type: "POST",
+        url: "bdd.php",
+        data: {
+            action: 'afficherPictogrammes'
+        },
+        success: function(response) {
+            // Fonction à exécuter lorsque la requête réussit
+            // console.log("Requête réussie !");
+            // console.log(response); // Affiche la réponse renvoyée par le serveur
+            afficherPictogrammes.innerHTML = '';
+            afficherPictogrammes.innerHTML = response;
+            afficherpictogrammes.find('script').each(function() {
+                eval(this.innerHTML);
+            });
+            updateHorlogeEvent();
+        },
+        error: function(xhr, status, error) {
+            // Fonction à exécuter en cas d'erreur de la requàte
+            console.error("Erreur lors de la requéte :", error);
+        }
+    });
 }
 
 function updateCache(now) {
