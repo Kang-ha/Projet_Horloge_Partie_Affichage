@@ -13,14 +13,14 @@ body {
   align-items: center;
   gap: 20px;
   width: 100%;
-  max-width: 400px;
-  margin-top: 50px;
+  max-width: 600px;
+  margin-top: 30px;
 }
 
 .horloge-face {
   position: relative;
-  width: 360px;
-  height: 360px;
+  width: 500px;
+  height: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,8 +28,8 @@ body {
 }
 
 #myPieChart, #myDoughnutChart {
-  width: 360px !important;
-  height: 360px !important; /* Était "360x" - typo corrigée */
+  width: 500px !important;
+  height: 500px !important; /* Était "360x" - typo corrigée */
   position: absolute;
   top: 0;
   left: 0;
@@ -37,12 +37,12 @@ body {
 
 .horloge-digital {
   font-size: 2.5em;
-  margin: 10px 0;
-  padding: 15px;
+  margin: 5px 0;
+  padding: 10px;
   background: #333;
   color: #fff;
   border-radius: 8px;
-  width: 100%;
+  width: 75%;
   text-align: center;
 }
 
@@ -55,11 +55,11 @@ body {
 
 .nombre-heure {
   position: absolute;
-  width: 25px;
-  height: 25px;
+  width: 35px;
+  height: 35px;
   color: white;
   text-align: center;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: bold;
   display: flex;
   justify-content: center;
@@ -77,37 +77,41 @@ body {
   bottom: 50%;
   left: 50%;
   transform-origin: bottom center; /* Corrigé */
-  margin-left: -3px; /* Pour centrer l'aiguille */
+  margin-left: -4px; /* Pour centrer l'aiguille */
 }
 
 .aiguille-heure {
-  width: 7px;  /* Réduit de 8px à 7px */
+  width: 10px;  /* Réduit de 8px à 7px */
   height: 30%;
   background: #ffffff;
+  border-radius: 5px;
 }
 
 .aiguille-minute {
-  width: 5px;  /* Réduit de 6px à 5px */
+  width: 7px;  /* Réduit de 6px à 5px */
   height: 35%;
   background: #000000;
+  border-radius: 3px;
 }
 
 .aiguille-seconde {
-  width: 2px;  /* Réduit de 3px à 2px */
+  width: 3px;  /* Réduit de 3px à 2px */
   height: 40%;
   background: rgb(0, 255, 238);
+  border-radius: 2px;
 }
 
 .centre-point {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 20px;
+  height: 20px;
   background: #333;
   border-radius: 50%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 20; /* Pour que le point central soit au-dessus des aiguilles */
+   border: 2px solid white;
 }
 
 .jour-container {
@@ -124,15 +128,15 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #333;
   border-radius: 6px;
-  background: white;
+  background: #333;
+  color: #fff;
   font-size: 14px;
 }
 
 .jour-box.selected {
-  background: #333;
-  color: #fff;
+  background: #fff;
+  color: #333;
 }
 
 .legend-container {
@@ -164,8 +168,8 @@ body {
 
 .cache-horloge {
   position: absolute;
-  width: 360px;
-  height: 360px;
+  width: 500px;
+  height: 500px;
   background: conic-gradient(
     from 0deg at 50% 50%,
     transparent 0deg,

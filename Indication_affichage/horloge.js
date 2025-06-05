@@ -160,7 +160,7 @@ function afficherHorloge() {
 
 function nombreHeureHorloge() {
     const horlogeFace = $('.horloge-face');
-    const rayon = 200; // Augmenté de 150 à 160
+    const rayon = 280; // Augmenté de 150 à 160
 
     // Supprimer les anciens nombres s'ils existent
     $('.nombre-heure').remove();
@@ -178,8 +178,8 @@ function nombreHeureHorloge() {
             .addClass('nombre-heure')
             .text(i === 24 ? 0 : i)
             .css({
-                'left': `${180 + x}px`,        // Centre à 180px + décalage
-                'top': `${180 + y}px`,         // Centre à 180px + décalage  
+                'left': `${250 + x}px`,        // Centre à 180px + décalage
+                'top': `${250 + y}px`,         // Centre à 180px + décalage  
                 'transform': `translate(-50%, -50%)` // Centrage précis
             });
 
