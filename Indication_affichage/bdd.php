@@ -4,10 +4,10 @@
 
     require_once("config.php");
     session_start();
-    //lien vers base de donn�es
+    //lien vers base de données
     $lien = null;
 
-    //Connexion � la base de donn�es
+    //Connexion à la base de données
     function bddConnect() {
         global $lien;
         try {
@@ -24,26 +24,26 @@
     /*                               REQUETTE AJAX                               */
     /*****************************************************************************/
 
-    // V�rification de la pr�sence d'une requette ajax
+    // Vérification de la présence d'une requette ajax
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
-        // $action contient le nom de la fonction � �xecuter
+        // $action contient le nom de la fonction à éxecuter
         
         if ($action == 'getPeriode') {
             if (isset($_POST['temps_minute'])) {
                 $temps_minute = $_POST['temps_minute'];
-                // Appeler la fonction getPeriode avec les param�tres appropri�s
+                // Appeler la fonction getPeriode avec les paramètres appropriés
                 $result = getPeriode($temps_minute);
     
-                // Vous pouvez renvoyer une r�ponse au JavaScript si n�cessaire
+                // Vous pouvez renvoyer une réponse au JavaScript si nécessaire
                 echo $result;
             }
         }
         if ($action == 'afficherPictogrammes') {
-            // Appeler la fonction getPeriode avec les param�tres appropri�s
+            // Appeler la fonction getPeriode avec les paramètres appropriés
             $result = afficherPictogrammes();
 
-            // Vous pouvez renvoyer une r�ponse au JavaScript si n�cessaire
+            // Vous pouvez renvoyer une réponse au JavaScript si nécessaire
             echo $result;
         }
         if ($action == 'updateHoraireHorloge') {
@@ -59,10 +59,10 @@
                 $nuit1 = $_POST['nuit1'];
                 $couleur_nuit = $_POST['couleur_nuit'];
                 
-                // Appeler la fonction getPeriode avec les param�tres appropri�s
+                // Appeler la fonction getPeriode avec les paramètres appropriés
                 $result = updateHoraireHorloge($matin1, $couleur_matin, $midi1, $couleur_midi, $apres_midi1, $couleur_apres_midi, $soir1, $couleur_soir, $nuit1, $couleur_nuit);
                 
-                // Vous pouvez renvoyer une r�ponse au JavaScript si n�cessaire
+                // Vous pouvez renvoyer une réponse au JavaScript si nécessaire
                 echo $result;
             }
         }
@@ -78,7 +78,7 @@
             
             $donnees = array();
         
-            // Parcourir les lignes du r�sultat et stocker chaque ligne dans un tableau
+            // Parcourir les lignes du résultat et stocker chaque ligne dans un tableau
             while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
                 $donnees[] = $row;
             }

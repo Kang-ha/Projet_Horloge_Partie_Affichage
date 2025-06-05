@@ -18,10 +18,10 @@ function horloge(labelNuit, nuit_debut_journee, nuit_fin_journee, couleurnuit,
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                display: false // Masquer la l�gende
+                display: false // Masquer la légende
             },
             tooltip: {
-                enabled: false // D�sactiver les info-bulles au survol
+                enabled: false // Désactiver les info-bulles au survol
             }
         },
         cutout: '0%', // Pour un pie chart plein
@@ -37,14 +37,14 @@ function horloge(labelNuit, nuit_debut_journee, nuit_fin_journee, couleurnuit,
         {label: labelSoir, color: couleursoir}
     ]);
 
-    // R�cup�ration du contexte du canevas
+    // Récupération du contexte du canevas
     var ctx = document.getElementById("myPieChart").getContext('2d');
     
     if (myPieChart) {
         myPieChart.destroy();   
     }
 
-    // Cr�ation du camembert
+    // Création du camembert
     myPieChart = new Chart(ctx, {
         type: 'pie', // Utiliser un diagramme en "pie"
         data: data,
@@ -118,7 +118,7 @@ function afficherHorloge() {
         //console.log([duree_nuit_debut_journee, duree_matin, duree_midi, duree_apresmidi, duree_soir, duree_nuit_fin_journee]);
         //console.log([couleur_nuit, couleur_matin, couleur_midi, couleur_apresmidi, couleur_soir, couleur_nuit]);
 
-        // update les donn�es
+        // update les données
         myPieChart.data.labels = [titre_nuit, titre_matin, titre_midi, titre_apresmidi, titre_soir, titre_nuit];
         myPieChart.data.datasets[0].data = [duree_nuit_debut_journee, duree_matin, duree_midi, duree_apresmidi, duree_soir, duree_nuit_fin_journee];
         myPieChart.data.datasets[0].backgroundColor = [couleur_nuit, couleur_matin, couleur_midi, couleur_apresmidi, couleur_soir, couleur_nuit];
@@ -138,20 +138,20 @@ function afficherHorloge() {
                 soir1: debut_soir,update
             },
             success: function(response) {
-                // Fonction � ex�cuter lorsque la requ�te r�ussit
-                //console.log("Requ�te r�ussie !");
-                // console.log(response); // Affiche la r�ponse renvoy�e par le serveur
+                // Fonction à exécuter lorsque la requête réussit
+                //console.log("Requête réussie !");
+                // console.log(response); // Affiche la réponse renvoyée par le serveur
             },
             error: function(xhr, status, error) {
-                // Fonction � ex�cuter en cas d'erreur de la requ�te
-                console.error("Erreur lors de la requ�te :", error);
+                // Fonction à exécuter en cas d'erreur de la requête
+                console.error("Erreur lors de la requête :", error);
             }
         });
     } else {
-        document.getElementById("Periodes_err").textContent = "V�rifier le d�but de chaque p�riodes";
+        document.getElementById("Periodes_err").textContent = "Vérifier le début de chaque périodes";
         document.getElementById("Periodes_err").style.border = "red solid 1px";
         setTimeout(function() {
-            // Permet d'�ffacer le message apres 5 seconde
+            // Permet d'éffacer le message apres 5 seconde
             document.getElementById("Periodes_err").textContent = "";
             document.getElementById("Periodes_err").style.border = "";
         }, 5000);
@@ -261,7 +261,7 @@ function pictogramme(id_picto, minuteDebut, minuteFin){
     if(minuteFin-minuteDebut <= 30) {
         ajustement=-1;
     }
-    x=(heure*15-90)+ajustement; // -ajustement pour le d�calage sufisant en foction de la taille de l'image et la largeur de l'event
+    x=(heure*15-90)+ajustement; // -ajustement pour le décalage sufisant en foction de la taille de l'image et la largeur de l'event
     // console.log(x, ajustement);
 
     div_pictogramme.style.transform = "rotate(" + x +"deg)";
