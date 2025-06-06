@@ -612,8 +612,8 @@ function pushEditEvent(id_event){
     var jour_semaine = lundi+mardi+mercredi+jeudi+vendredi+samedi+dimanche;
     var interval_semaine = document.getElementsByName("interval-semaine")[1].value;
     var date_fin = document.getElementsByName("date-fin")[1].value;
-    var audio = document.getElementById("audio").checked ? "1" : "0";
-    var odeur = document.getElementById("odeur").checked ? "1" : "0";
+    var audio = document.getElementById("audio-edit").checked ? "1" : "0";
+    var odeur = document.getElementById("odeur-edit").checked ? "1" : "0";
     var err = document.getElementById("Event_err_modif");
 
     // console.log("titre = ", titre);
