@@ -1,6 +1,6 @@
 <?php
-$host = "localhost";
-$dbname = "affichage_horloge";
-$user = "root";
-$pwd = "horloge"
+    define("USER", "root");
+    define("PWD", "horloge");
+    define("BDD", "projet_horloge");
+    define("HOST", "localhost");
 ?>

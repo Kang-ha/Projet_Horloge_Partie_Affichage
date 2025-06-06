@@ -1,126 +1,202 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: #444444;
-    font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #444444;
+  font-family: Arial, sans-serif;
+  padding: 20px;
 }
 
-#camembert {
-    width: 340px;  /* Réduit de 520px à 460px */
-    height: 340x; /* Réduit de 520px à 460px */
-    position: absolute;
-    top: 60px;
-    left: 60px;
+.horloge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin-top: 30px;
 }
 
-.analog-clock {
-    width: 440px;  /* Réduit de 500px à 440px */
-    height: 440px; /* Réduit de 500px à 440px */
-    border: 10px solid #333; /* Réduit de 12px à 10px */
-    border-radius: 50%;
-    position: relative;
-    z-index: 2;
-    margin: 0 auto;
+.horloge-face {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 60px;
 }
 
-.hand {
-    position: absolute;
-    bottom: 50%;
-    left: 50%;
-    transform-origin: bottom;
+#myPieChart, #myDoughnutChart {
+  width: 500px !important;
+  height: 500px !important; /* Était "360x" - typo corrigée */
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-.hour-hand {
-    width: 7px;  /* Réduit de 8px à 7px */
-    height: 30%;
-    background: #ffffff;
+.horloge-digital {
+  font-size: 2.5em;
+  margin: 5px 0;
+  padding: 10px;
+  background: #333;
+  color: #fff;
+  border-radius: 8px;
+  width: 75%;
+  text-align: center;
 }
 
-.minute-hand {
-    width: 5px;  /* Réduit de 6px à 5px */
-    height: 35%;
-    background: #000000;
+.affichage-date {
+  color: white;
+  font-size: 1.5em;
+  margin: 10px 0;
+  text-align: center;
 }
 
-.second-hand {
-    width: 2px;  /* Réduit de 3px à 2px */
-    height: 40%;
-    background: rgb(0, 255, 238);
+.nombre-heure {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  color: white;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #333;
+  border-radius: 50%;
+  border: 1px solid white;
+  z-index: 15; /* Au-dessus du camembert */
+  transform-origin: center;
 }
 
-.digital-clock {
-    font-size: 2.2em; /* Réduit de 2.5em à 2.2em */
-    margin: 25px 0; /* Réduit de 30px à 25px */
-    padding: 12px; /* Réduit de 15px à 12px */
-    background: #333;
-    color: #fff;
-    border-radius: 6px;
+/* Ajustement des aiguilles et point central */
+.aiguille {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom center; /* Corrigé */
+  margin-left: -4px; /* Pour centrer l'aiguille */
 }
 
-.date-display {
-    color: white;
-    font-size: 1.3em; /* Réduit de 1.5em à 1.3em */
-    margin: 12px 0; /* Réduit de 15px à 12px */
+.aiguille-heure {
+  width: 10px;  /* Réduit de 8px à 7px */
+  height: 30%;
+  background: #ffffff;
+  border-radius: 5px;
 }
 
-.center-dot {
-    position: absolute;
-    width: 14px;  /* Réduit de 16px à 14px */
-    height: 14px; /* Réduit de 16px à 14px */
-    background: #333;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.aiguille-minute {
+  width: 7px;  /* Réduit de 6px à 5px */
+  height: 35%;
+  background: #000000;
+  border-radius: 3px;
 }
 
-.hour-number {
-    position: absolute;
-    width: 45px;  /* Réduit de 50px à 45px */
-    height: 45px; /* Réduit de 50px à 45px */
-    color: white;
-    text-align: center;
-    line-height: 45px;
-    font-size: 18px; /* Réduit de 20px à 18px */
-    font-weight: bold;
-    transform-origin: center;
-    transform: translate(-50%, -50%);
+.aiguille-seconde {
+  width: 3px;  /* Réduit de 3px à 2px */
+  height: 40%;
+  background: #f00;
+  border-radius: 2px;
 }
 
-.minute-number {
-    position: absolute;
-    width: 30px; /* Réduit de 35px à 30px */
-    height: 30px;
-    text-align: center;
-    line-height: 30px;
-    font-size: 12px; /* Réduit de 14px à 12px */
-    color: white;
-    transform-origin: center;
-    transform: translate(-50%, -50%);
+.centre-point {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #333;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20; /* Pour que le point central soit au-dessus des aiguilles */
+   border: 2px solid white;
 }
 
-.day-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 25px; /* Réduit de 30px à 25px */
+.pictogramme{
+  transform-origin:left center; 
+  position:absolute;
+  margin-left: 201px;
+  margin-top: -201px; 
+  width:320px; 
+  height:4px; 
 }
 
-.day-box {
-    width: 45px;  /* Réduit de 50px à 45px */
-    height: 45px; /* Réduit de 50px à 45px */
-    margin: 6px;  /* Réduit de 8px à 6px */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #333;
-    border-radius: 6px;
-    background: white;
-    cursor: pointer;
-    font-size: 14px; /* Réduit de 16px à 14px */
+.pre-svg{
+  width: 25px;
+  height: 25px;
+  margin-left: 160px;
+  background-color: white;
+  border-radius: 25px;
+  overflow: hidden;
 }
-.day-box.selected {
-    background: #333;
-    color: #fff;
+
+.jour-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.jour-box {
+  width: 45px;
+  height: 45px;
+  margin: 0 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  background: #333;
+  color: #fff;
+  font-size: 14px;
+}
+
+.jour-box.selected {
+  background: #fff;
+  color: #333;
+}
+
+.legend-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: #333;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 30;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.legend-label {
+  font-size: 14px;
+  color: #fff;
+}
+
+.cache-horloge {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    #444444 0deg,
+    #444444 var(--angle-cache, 0deg),
+    transparent var(--angle-cache, 0deg)
+  );
+  border-radius: 50%;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0.6;
 }
