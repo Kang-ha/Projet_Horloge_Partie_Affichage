@@ -561,15 +561,15 @@ function afficherDialogEditEvent(id, titre, couleur, debut_minute, duree_minute,
                     <label for="date">Jusqu'au :</label>
                     <input type="date" id="date" name="date-fin" value=`+date_fin+`>
                 </div>
-				<div>
-					<input type="checkbox" id="audio-edit" name="audio-edit" ${audio == 1 ? 'checked' : ''}/>
-					<label for="audio-edit">audio</label>
-				</div>
-        
-				<div>
-					<input type="checkbox" id="odeur-edit" name="odeur-edit" ${odeur == 1 ? 'checked' : ''}/>
-					<label for="odeur-edit">odeur</label>
-				</div>
+                <div>
+				    <div class="sensorielle">
+					    <input type="checkbox" id="audio-edit" name="audio-edit" ${audio == 1 ? 'checked' : ''}/>
+					    <label for="audio-edit">Aud</label>
+				
+					    <input type="checkbox" id="odeur-edit" name="odeur-edit" ${odeur == 1 ? 'checked' : ''}/>
+					    <label for="odeur-edit">Olf</label>
+				    </div>
+                </div>
                 </form>
             <button onclick="pushEditEvent(`+id+`)">Modifier l'événement</button>
             <div class="Event_err_modif" id="Event_err_modif"></div>
@@ -802,6 +802,8 @@ function ajouterEvent(){
                     document.getElementById("Vendredi").checked = "";
                     document.getElementById("Samedi").checked = "";
                     document.getElementById("Dimanche").checked = "";
+                    document.getElementById("audio").checked = "";
+                    document.getElementById("odeur").checked = "";
                     interval_semaine =document.getElementById("number").value = "";
                     document.getElementById("date").value = "";
                 }

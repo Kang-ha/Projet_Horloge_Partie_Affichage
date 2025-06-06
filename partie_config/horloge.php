@@ -150,13 +150,13 @@
                         </div>
                         
                         <div>
-							<input type="checkbox" id="audio" name="audio" <?php echo (isset($evenement['audio']) && $evenement['audio'] == 1) ? 'checked' : ''; ?> />
-							<label for="audio">audio</label>
-                        </div>
-                        
-                        <div>
-							<input type="checkbox" id="odeur" name="odeur" <?php echo (isset($evenement['odeur']) && $evenement['odeur'] == 1) ? 'checked' : ''; ?> />
-							<label for="odeur">odeur</label>
+                            <div class="sensorielle">
+							    <input type="checkbox" id="audio" name="audio" <?php echo (isset($evenement['audio']) && $evenement['audio'] == 1) ? 'checked' : ''; ?> />
+							    <label for="audio">Aud</label>
+                    
+							    <input type="checkbox" id="odeur" name="odeur" <?php echo (isset($evenement['odeur']) && $evenement['odeur'] == 1) ? 'checked' : ''; ?> />
+							    <label for="odeur">Olf</label>
+                            </div>
                         </div>
 
                     </form>
