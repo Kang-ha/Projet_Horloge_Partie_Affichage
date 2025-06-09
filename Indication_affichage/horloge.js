@@ -81,7 +81,12 @@ function createLegend(items) {
 }
 
 function afficherHorloge() {
-    //titre_matin = document.getElementById("titre_matin").textContent;
+    const matinElement = document.getElementById("titre_matin");
+    if (!matinElement) {
+        console.log("Les éléments des périodes ne sont pas encore chargés");
+        return;
+    }
+    titre_matin = document.getElementById("titre_matin").textContent;
     debut_matin = document.getElementById("matin1").value;
     debut_matin_minute = parseInt(debut_matin.split(":")[0])*60 + parseInt(debut_matin.split(":")[1]);
     couleur_matin = document.getElementById("couleur_matin").value;
@@ -128,7 +133,7 @@ function afficherHorloge() {
             type: "POST",
             url: "bdd.php",
             data: {
-                action: 'majHoraireHorloge',
+                action: 'updateHoraireHorloge',
                 matin1: debut_matin,
                 couleur_matin: couleur_matin,
                 midi1: debut_midi,
@@ -231,7 +236,7 @@ function majHorlogeSimple() {
 
     // Sélectionner le jour actuel
     const dayIndex = now.getDay(); // 0=Lundi, 6=Dimanche; // 0 (Dimanche) à 6 (Samedi)
-    $('.box-jour').removeClass('selected');
+    $('.jour-box').removeClass('selected');
     $(`#jour-${(dayIndex + 6) % 7}`).addClass('selected'); // Ajustement pour commencer à Lundi
 
     updateCache(now);
@@ -245,6 +250,46 @@ $(document).ready(function() {
 
 });
 
+function pictogramme(id_picto, minuteDebut, minuteFin){
+    var div_pictogramme = document.getElementById("div-picto"+id_picto);
+    var pictogramme = document.getElementById("div-picto"+id_picto).getElementsByTagName("svg")[0];
+    
+    // Conversion des minutes en heures
+    var heureDebut = minuteDebut / 60;
+    var heureFin = minuteFin / 60;
+    
+    // Position au milieu de l'événement
+    var heureMoyenne = heureDebut + (heureFin - heureDebut) / 2;
+    
+    // Calcul de l'angle en degrés (0° = minuit en haut, sens horaire)
+    // Pour une horloge 24h : chaque heure = 15° (360° / 24h)
+    var angleDegres = (heureMoyenne * 15) - 90; // -90 pour commencer à minuit en haut
+    
+    // Rayon pour positionner les pictogrammes (même que les nombres d'heures)
+    var rayon = 220; // Ajusté pour être entre le centre et le bord
+    
+    // Conversion en radians pour les calculs trigonométriques
+    var angleRadians = (angleDegres * Math.PI) / 180;
+    
+    // Calcul des positions x et y
+    var x = Math.cos(angleRadians) * rayon;
+    var y = Math.sin(angleRadians) * rayon;
+    
+    // Positionnement du conteneur du pictogramme
+    div_pictogramme.style.position = "absolute";
+    div_pictogramme.style.left = (250 + x) + "px"; // 250 = centre de l'horloge
+    div_pictogramme.style.top = (250 + y) + "px";
+    div_pictogramme.style.transform = "translate(-50%, -50%)"; // Centrage
+    div_pictogramme.style.transformOrigin = "center";
+    
+    // S'assurer que le pictogramme reste droit (pas de rotation du contenu)
+    if (pictogramme) {
+        pictogramme.style.transform = "rotate(0deg)";
+        pictogramme.style.width = "100%";
+        pictogramme.style.height = "100%";
+    }
+}
+
 function afficherPictogrammes(){
     var afficherPictogrammes = document.getElementById("afficherPictogrammes");
     var afficherpictogrammes = $('#afficherPictogrammes');
@@ -255,9 +300,6 @@ function afficherPictogrammes(){
             action: 'afficherPictogrammes'
         },
         success: function(response) {
-            // Fonction à exécuter lorsque la requête réussit
-            // console.log("Requête réussie !");
-            // console.log(response); // Affiche la réponse renvoyée par le serveur
             afficherPictogrammes.innerHTML = '';
             afficherPictogrammes.innerHTML = response;
             afficherpictogrammes.find('script').each(function() {
@@ -265,8 +307,7 @@ function afficherPictogrammes(){
             });
             updateHorlogeEvent();
         },
-        error: function(xhr, status, error) {
-            // Fonction à exécuter en cas d'erreur de la requàte
+        error: function(xhr, status, error) {+                                             
             console.error("Erreur lors de la requéte :", error);
         }
     });

@@ -1,7 +1,4 @@
 <?php
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-
     require_once("config.php");
     session_start();
     //lien vers base de données
@@ -12,7 +9,7 @@
         global $lien;
         try {
             $lien = new PDO("mysql:dbname=".BDD.";charset=utf8",USER, PWD,
-                            array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
+            array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
         } catch (Exception $e) {
             echo ("Base de données en maintenance");
             $lien = null;
@@ -115,31 +112,8 @@
         } catch (Exception $e) {
             $lien = null;
         }
-        try{
-            $matin = sprintf("%02d", floor($donnees[1]['debut'] / 60)) . ":" . (sprintf("%02d", $donnees[1]['debut'] % 60));
-            $couleur_matin = $donnees[1]['couleur'];
-
-            $midi = sprintf("%02d", floor($donnees[2]['debut']/60)) . ":" . (sprintf("%02d", $donnees[2]['debut'] % 60));
-            $couleur_midi = $donnees[2]['couleur'];
-
-            $apres_midi = sprintf("%02d", floor($donnees[3]['debut']/60)) . ":" . (sprintf("%02d", $donnees[3]['debut'] % 60));
-            $couleur_apres_midi = $donnees[3]['couleur'];
-
-            $soir = sprintf("%02d", floor($donnees[4]['debut']/60)) . ":" . (sprintf("%02d", $donnees[4]['debut'] % 60));
-            $couleur_soir = $donnees[4]['couleur'];
-
-            $nuit = sprintf("%02d", floor($donnees[5]['debut']/60)) . ":" . (sprintf("%02d", $donnees[5]['debut'] % 60));
-            $couleur_nuit = $donnees[5]['couleur'];
-
-            lignePeriode("matin", $matin, $couleur_matin);
-            lignePeriode("midi", $midi, $couleur_midi);
-            lignePeriode("apres_midi", $apres_midi, $couleur_apres_midi);
-            lignePeriode("soir", $soir, $couleur_soir);
-            lignePeriode("nuit", $nuit, $couleur_nuit);
-        } catch (Exception $e) {
-            $lien = null;
-        }
     }
+
     function updateHoraireHorloge($matin1, $couleur_matin, $midi1, $couleur_midi, $apres_midi1, $couleur_apres_midi, $soir1, $couleur_soir, $nuit1, $couleur_nuit){
         global $lien;
         bddConnect();
@@ -176,58 +150,89 @@
         } catch (Exception $e) {
             $lien = null;
         }
-    
-    function lignePeriode($titre, $valeur, $couleur){
-        if ($titre == "matin") {$titre2 = "Matin";}
-        if ($titre == "midi") {$titre2 = "Midi";}
-        if ($titre == "apres_midi") {$titre2 = "Après midi";}
-        if ($titre == "soir") {$titre2 = "Soir";}
-        if ($titre == "nuit") {$titre2 = "Nuit";}
-        
-        echo "<div>\n";
-        echo "\t<label class='label-tab' id='titre_".$titre."'>".$titre2." :</label>\n";
-        echo "\t<input name='".$titre."1' id='".$titre."1' value='".$valeur."' type='time'>\n";
-        echo "\t<input type='color' id='couleur_".$titre."' name='couleur_".$titre."' value=".$couleur." class='select-tab'>\n";
-        echo "</div>\n";
-    }    
-}
-
-function afficherPictogrammes() {
-    global $lien;
-    $nbLigne = 0;
-    bddConnect();
-    try {
-        $req = "SELECT evenements.id AS id_event, debut, duree, pictogrammes.id AS id_img, pictogrammes.image, pictogrammes.nom FROM `evenements` JOIN pictogrammes ON pictogrammes.id = evenements.pictogramme JOIN configurations ON configurations.id_utilisateur = evenements.id_utilisateur  ORDER BY debut ASC;";
-        // echo $req;
-        $res = $lien->query($req);
-        $donnees = array();
-
-        // Parcourir les lignes du résultat et stocker chaque ligne dans un tableau
-        while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
-            $donnees[] = $row;
-            $nbLigne++;
-        }
-        // echo $nbLigne;
-        // print_r($donnees);
-
-        for ($i=0; $i < $nbLigne; $i++) { 
-            if($i!=0){echo "\t\t\t\t\t\t\t";}
-            echo "<div class='pictogramme' id='div-picto".$i."' style='transform-origin: left center;'>\n";
-            echo "\t\t\t\t\t\t\t<div class='pre-svg'>\n";
-            echo "\t\t\t\t\t\t\t\t".$donnees[$i]['image']."\n";
-            echo "\t\t\t\t\t\t\t</div>\n";
-            echo "\t\t\t\t\t\t\t</div>\n";
-        }
-
-        echo "\t\t\t\t\t\t\t<script>\n";
-        for ($i=0; $i < $nbLigne; $i++) { 
-            echo "\t\t\t\t\t\t\t\tpictogramme(".$i.",".$donnees[$i]['debut'].", ".($donnees[$i]['debut']+$donnees[$i]['duree']).");\n";
-        }
-        echo "\t\t\t\t\t\t\t</script>\n";
-        
-        return;
-    } catch (Exception $e) {
-        echo "Erreur : " . $e->getMessage();
-        $lien = null;
     }
-}
+
+    function getPeriode($temps_minute){
+        global $lien;
+        bddConnect();
+        try {
+            // Vérifiez que la connexion à la base de données est établie
+            if (!$lien) {
+                throw new Exception("La connexion à la base de données n'est pas établie");
+            }
+            $req="SELECT * FROM periodes JOIN configurations on configurations.id = periodes.id_configuration WHERE configurations.id_utilisateur = '$id_horloge' ORDER BY debut ASC";
+            $res = $lien->query($req);
+    
+            $donnees = array();
+        
+            // Parcourir les lignes du résultat et stocker chaque ligne dans un tableau
+            while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+                $donnees[] = $row;
+            }
+
+            $periode_acctuel = null;
+
+            for ($i = 0; $i < count($donnees); $i++) {
+                if ($temps_minute >= $donnees[$i]["debut"] && $temps_minute < ($donnees[$i]["debut"] + $donnees[$i]["duree"])) {
+                    $periode_acctuel = $donnees[$i]['nom'];
+                    break;
+                }
+            }
+
+            // Si aucune période n'a été trouvée, cela signifie que le temps est après la dernière période
+            // donc nous sommes dans la première période de la journée suivante
+            if ($periode_acctuel === null) {
+                $periode_acctuel = $donnees[0]['nom'];
+            }
+
+            // Si la période est une période spéciale de nuit, la remplacer par "nuit"
+            if ($periode_acctuel == "nuit_debut_journee" || $periode_acctuel == "nuit_fin_journee") {
+                $periode_acctuel = "nuit";
+            }
+            return $periode_acctuel;
+
+        } catch (Exception $e) {
+            echo "Erreur : " . $e->getMessage();
+            $lien = null;
+        }
+    }
+
+    function afficherPictogrammes() {
+        global $lien;
+        $nbLigne = 0;
+        bddConnect();
+        try {
+            $req = "SELECT evenements.id AS id_event, debut, duree, pictogrammes.id AS id_img, pictogrammes.image, pictogrammes.nom FROM `evenements` JOIN pictogrammes ON pictogrammes.id = evenements.pictogramme JOIN configurations ON configurations.id_utilisateur = evenements.id_utilisateur  ORDER BY debut ASC;";
+            // echo $req;
+            $res = $lien->query($req);
+            $donnees = array();
+
+            // Parcourir les lignes du résultat et stocker chaque ligne dans un tableau
+            while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+                $donnees[] = $row;
+                $nbLigne++;
+            }
+            // echo $nbLigne;
+            // print_r($donnees);
+
+            for ($i=0; $i < $nbLigne; $i++) { 
+                if($i!=0){echo "\t\t\t\t\t\t\t";}
+                echo "<div class='pictogramme' id='div-picto".$i."' style='transform-origin: left center;'>\n";
+                echo "\t\t\t\t\t\t\t<div class='pre-svg'>\n";
+                echo "\t\t\t\t\t\t\t\t".$donnees[$i]['image']."\n";
+                echo "\t\t\t\t\t\t\t</div>\n";
+                echo "\t\t\t\t\t\t\t</div>\n";
+            }
+
+            echo "\t\t\t\t\t\t\t<script>\n";
+            for ($i=0; $i < $nbLigne; $i++) { 
+                echo "\t\t\t\t\t\t\t\tpictogramme(".$i.",".$donnees[$i]['debut'].", ".($donnees[$i]['debut']+$donnees[$i]['duree']).");\n";
+            }
+            echo "\t\t\t\t\t\t\t</script>\n";
+            
+            return;
+        } catch (Exception $e) {
+            echo "Erreur : " . $e->getMessage();
+            $lien = null;
+        }
+    }

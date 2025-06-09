@@ -11,13 +11,14 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <link href="horloge.css?" rel="stylesheet" type="text/css">
-        <script src="horloge.js"></script>
+        <link rel="icon" type="image/x-icon" href="horloge.png">
     </head>
     <body>
         <div class="horloge-container">
             <div class="horloge-face">
                 <canvas id="myDoughnutChart"></canvas>
                 <canvas id="myPieChart"></canvas>
+                <script src="horloge.js?<?php $randomNumber = rand(1, 100); echo $randomNumber;?>"></script>
         
                 <!-- Aiguilles et point central -->
                 <div class="aiguille aiguille-heure"></div>
@@ -26,12 +27,11 @@
                 <div class="centre-point"></div>
                 
                 <div id="afficherPictogrammes">
-                    <?php
-                     afficherPictogrammes();
-                    ?>
+                    <?php afficherPictogrammes(); ?>
                 </div>
             </div>
             <?php afficherHorloge(); ?>
+
             <!-- Horloge digitale -->
             <div class="horloge-digital">--:--:--</div>
 
