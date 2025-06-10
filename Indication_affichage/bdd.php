@@ -1,16 +1,20 @@
 <?php
+    // Inclut le fichier de configuration
     require_once("config.php");
+    // Démarre la session
     session_start();
-    //lien vers base de données
+    // Variable pour stocker la connexion à la base de données
     $lien = null;
 
-    //Connexion à la base de données
+    // Fonction pour se connecter à la base de données
     function bddConnect() {
         global $lien;
         try {
+            // Crée une nouvelle connexion PDO
             $lien = new PDO("mysql:dbname=".BDD.";charset=utf8",USER, PWD,
             array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
         } catch (Exception $e) {
+            // Affiche un message d'erreur si la connexion échoue
             echo ("Base de données en maintenance");
             $lien = null;
             die();
@@ -21,66 +25,48 @@
     /*                               REQUETTE AJAX                               */
     /*****************************************************************************/
 
-    // Vérification de la présence d'une requette ajax
+    // Vérifie si une requête AJAX est envoyée
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
-        // $action contient le nom de la fonction à éxecuter
+        // $action contient le nom de la fonction à exécuter
         
+        // Si l'action est 'getPeriode'
         if ($action == 'getPeriode') {
             if (isset($_POST['temps_minute'])) {
                 $temps_minute = $_POST['temps_minute'];
-                // Appeler la fonction getPeriode avec les paramètres appropriés
+                // Appelle la fonction getPeriode avec le temps en minutes
                 $result = getPeriode($temps_minute);
-    
-                // Vous pouvez renvoyer une réponse au JavaScript si nécessaire
+                // Renvoie le résultat
                 echo $result;
             }
         }
+        // Si l'action est 'afficherPictogrammes'
         if ($action == 'afficherPictogrammes') {
-            // Appeler la fonction getPeriode avec les paramètres appropriés
+            // Appelle la fonction afficherPictogrammes
             $result = afficherPictogrammes();
-
-            // Vous pouvez renvoyer une réponse au JavaScript si nécessaire
+            // Renvoie le résultat
             echo $result;
-        }
-        if ($action == 'updateHoraireHorloge') {
-            if (isset($_POST['matin1'])) {
-                $matin1 = $_POST['matin1'];
-                $couleur_matin = $_POST['couleur_matin'];
-                $midi1 = $_POST['midi1'];
-                $couleur_midi = $_POST['couleur_midi'];
-                $apres_midi1 = $_POST['apres_midi1'];
-                $couleur_apres_midi = $_POST['couleur_apres_midi'];
-                $soir1 = $_POST['soir1'];
-                $couleur_soir = $_POST['couleur_soir'];
-                $nuit1 = $_POST['nuit1'];
-                $couleur_nuit = $_POST['couleur_nuit'];
-                
-                // Appeler la fonction getPeriode avec les paramètres appropriés
-                $result = updateHoraireHorloge($matin1, $couleur_matin, $midi1, $couleur_midi, $apres_midi1, $couleur_apres_midi, $soir1, $couleur_soir, $nuit1, $couleur_nuit);
-                
-                // Vous pouvez renvoyer une réponse au JavaScript si nécessaire
-                echo $result;
-            }
         }
     }
     /*****************************************************************************/
-    /*                         FONCTION LIER AUX PERIODES                        */
+    /*                                  FONCTION                                 */
     /*****************************************************************************/
+    // Fonction pour afficher l'horloge avec les périodes de la journée
     function afficherHorloge(){
         global $lien;
         try {
+            // Requête SQL pour récupérer les périodes et configurations
             $req="SELECT * FROM periodes JOIN configurations ON configurations.id = periodes.id_configuration";
             $res = $lien->query($req);
             
             $donnees = array();
         
-            // Parcourir les lignes du résultat et stocker chaque ligne dans un tableau
+            // Stocke les résultats dans un tableau
             while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
                 $donnees[] = $row;
             }
-            //print_r($donnees);
 
+            // Récupère les données pour chaque période
             $labelMatin = $donnees[1]['nom'];
             $d_matin = $donnees[1]['duree']/60;
             $couleurmatin = $donnees[1]['couleur'];
@@ -103,7 +89,7 @@
             $d_nuit_fin_journee = $donnees[5]['duree']/60;
             $couleurnuit = $donnees[5]['couleur'];
             
-
+            // Génère le script JavaScript pour initialiser l'horloge
             echo "<script>";
             echo        "horloge('".$labelNuit."',".$d_nuit_debut_journee.",".$d_nuit_fin_journee.",'".$couleurnuit."','".$labelMatin."',".$d_matin.",'".$couleurmatin."','".$labelMidi."',".$d_midi.",'".$couleurmidi."','".$labelApresMidi."',".$d_apres_midi.",'".$couleurapresmidi."','".$labelSoir."',".$d_soir.",'".$couleursoir."');";
             echo "</script>\n";
@@ -114,64 +100,29 @@
         }
     }
 
-    function updateHoraireHorloge($matin1, $couleur_matin, $midi1, $couleur_midi, $apres_midi1, $couleur_apres_midi, $soir1, $couleur_soir, $nuit1, $couleur_nuit){
-        global $lien;
-        bddConnect();
-        try {
-            $matin = intval(explode(":", $matin1)[0]) * 60 + intval(explode(":", $matin1)[1]);
-            $d_matin = (intval(explode(":", $midi1)[0]) * 60 + intval(explode(":", $midi1)[1]))-(intval(explode(":", $matin1)[0]) * 60 + intval(explode(":", $matin1)[1]));
-
-            $midi = intval(explode(":", $midi1)[0]) * 60 + intval(explode(":", $midi1)[1]);
-            $d_midi = (intval(explode(":", $apres_midi1)[0]) * 60 + intval(explode(":", $apres_midi1)[1]))-(intval(explode(":", $midi1)[0]) * 60 + intval(explode(":", $midi1)[1]));
-
-            $apres_midi = intval(explode(":", $apres_midi1)[0]) * 60 + intval(explode(":", $apres_midi1)[1]);
-            $d_apres_midi = (intval(explode(":", $soir1)[0]) * 60 + intval(explode(":", $soir1)[1]))-(intval(explode(":", $apres_midi1)[0]) * 60 + intval(explode(":", $apres_midi1)[1]));
-
-            $soir = intval(explode(":", $soir1)[0]) * 60 + intval(explode(":", $soir1)[1]);
-            $d_soir = (intval(explode(":", $nuit1)[0]) * 60 + intval(explode(":", $nuit1)[1]))-(intval(explode(":", $soir1)[0]) * 60 + intval(explode(":", $soir1)[1]));
-
-            $nuit_debut_journee = 0;
-            $d_nuit_debut_journee = $matin;
-
-            $nuit_fin_journee = intval(explode(":", $nuit1)[0]) * 60 + intval(explode(":", $nuit1)[1]);
-            $d_nuit_fin_journee = 24*60-$nuit_fin_journee;
-
-            $req="UPDATE periodes JOIN configurations ON configurations.id = periodes.id_configuration SET periodes.nom = 'nuit_debut_journee', periodes.debut = '$nuit_debut_journee', periodes.duree = '$d_nuit_debut_journee', periodes.couleur = '$couleur_nuit' WHERE periodes.nom = 'nuit_debut_journee';
-                  UPDATE periodes JOIN configurations ON configurations.id = periodes.id_configuration SET periodes.nom = 'matin', periodes.debut = '$matin', periodes.duree = '$d_matin', periodes.couleur = '$couleur_matin' WHERE periodes.nom = 'matin';
-                  UPDATE periodes JOIN configurations ON configurations.id = periodes.id_configuration SET periodes.nom = 'midi', periodes.debut = '$midi', periodes.duree = '$d_midi', periodes.couleur = '$couleur_midi' WHERE periodes.nom = 'midi';
-                  UPDATE periodes JOIN configurations ON configurations.id = periodes.id_configuration SET periodes.nom = 'apres_midi', periodes.debut = '$apres_midi', periodes.duree = '$d_apres_midi', periodes.couleur = '$couleur_apres_midi' WHERE periodes.nom = 'apres_midi';
-                  UPDATE periodes JOIN configurations ON configurations.id = periodes.id_configuration SET periodes.nom = 'soir', periodes.debut = '$soir', periodes.duree = '$d_soir', periodes.couleur = '$couleur_soir' WHERE periodes.nom = 'soir';
-                  UPDATE periodes JOIN configurations ON configurations.id = periodes.id_configuration SET periodes.nom = 'nuit_fin_journee', periodes.debut = '$nuit_fin_journee', periodes.duree = '$d_nuit_fin_journee', periodes.couleur = '$couleur_nuit' WHERE periodes.nom = 'nuit_fin_journee';
-                  ";
-            echo $req;
-            $res = $lien->query($req);
-            
-            return 1;
-        } catch (Exception $e) {
-            $lien = null;
-        }
-    }
-
+    // Fonction pour obtenir la période actuelle en fonction du temps en minutes
     function getPeriode($temps_minute){
         global $lien;
         bddConnect();
         try {
-            // Vérifiez que la connexion à la base de données est établie
+            // Vérifie que la connexion est établie
             if (!$lien) {
                 throw new Exception("La connexion à la base de données n'est pas établie");
             }
-            $req="SELECT * FROM periodes JOIN configurations on configurations.id = periodes.id_configuration WHERE configurations.id_utilisateur = '$id_horloge' ORDER BY debut ASC";
+            // Requête SQL pour récupérer les périodes
+            $req="SELECT * FROM periodes JOIN configurations on configurations.id = periodes.id_configuration ORDER BY debut ASC";
             $res = $lien->query($req);
     
             $donnees = array();
         
-            // Parcourir les lignes du résultat et stocker chaque ligne dans un tableau
+            // Stocke les résultats dans un tableau
             while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
                 $donnees[] = $row;
             }
 
             $periode_acctuel = null;
 
+            // Cherche la période correspondant au temps donné
             for ($i = 0; $i < count($donnees); $i++) {
                 if ($temps_minute >= $donnees[$i]["debut"] && $temps_minute < ($donnees[$i]["debut"] + $donnees[$i]["duree"])) {
                     $periode_acctuel = $donnees[$i]['nom'];
@@ -179,13 +130,12 @@
                 }
             }
 
-            // Si aucune période n'a été trouvée, cela signifie que le temps est après la dernière période
-            // donc nous sommes dans la première période de la journée suivante
+            // Si aucune période n'est trouvée, utilise la première période du jour suivant
             if ($periode_acctuel === null) {
                 $periode_acctuel = $donnees[0]['nom'];
             }
 
-            // Si la période est une période spéciale de nuit, la remplacer par "nuit"
+            // Remplace les périodes spéciales de nuit par "nuit"
             if ($periode_acctuel == "nuit_debut_journee" || $periode_acctuel == "nuit_fin_journee") {
                 $periode_acctuel = "nuit";
             }
@@ -197,24 +147,24 @@
         }
     }
 
+    // Fonction pour afficher les pictogrammes
     function afficherPictogrammes() {
         global $lien;
         $nbLigne = 0;
         bddConnect();
         try {
+            // Requête SQL pour récupérer les événements et pictogrammes
             $req = "SELECT evenements.id AS id_event, debut, duree, pictogrammes.id AS id_img, pictogrammes.image, pictogrammes.nom FROM `evenements` JOIN pictogrammes ON pictogrammes.id = evenements.pictogramme JOIN configurations ON configurations.id_utilisateur = evenements.id_utilisateur  ORDER BY debut ASC;";
-            // echo $req;
             $res = $lien->query($req);
             $donnees = array();
 
-            // Parcourir les lignes du résultat et stocker chaque ligne dans un tableau
+            // Stocke les résultats dans un tableau
             while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
                 $donnees[] = $row;
                 $nbLigne++;
             }
-            // echo $nbLigne;
-            // print_r($donnees);
 
+            // Génère le HTML pour chaque pictogramme
             for ($i=0; $i < $nbLigne; $i++) { 
                 if($i!=0){echo "\t\t\t\t\t\t\t";}
                 echo "<div class='pictogramme' id='div-picto".$i."' style='transform-origin: left center;'>\n";
@@ -224,6 +174,7 @@
                 echo "\t\t\t\t\t\t\t</div>\n";
             }
 
+            // Génère le JavaScript pour positionner les pictogrammes
             echo "\t\t\t\t\t\t\t<script>\n";
             for ($i=0; $i < $nbLigne; $i++) { 
                 echo "\t\t\t\t\t\t\t\tpictogramme(".$i.",".$donnees[$i]['debut'].", ".($donnees[$i]['debut']+$donnees[$i]['duree']).");\n";

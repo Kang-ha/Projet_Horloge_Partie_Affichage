@@ -1,3 +1,4 @@
+/* Style général de la page */
 body {
   display: flex;
   flex-direction: column;
@@ -7,6 +8,7 @@ body {
   padding: 20px;
 }
 
+/* Conteneur principal de l'horloge */
 .horloge-container {
   display: flex;
   flex-direction: column;
@@ -17,6 +19,7 @@ body {
   margin-top: 30px;
 }
 
+/* Face de l'horloge */
 .horloge-face {
   position: relative;
   width: 500px;
@@ -27,6 +30,7 @@ body {
   margin-bottom: 60px;
 }
 
+/* Style des graphiques */
 #myPieChart, #myDoughnutChart {
   width: 500px !important;
   height: 500px !important;
@@ -35,6 +39,7 @@ body {
   left: 0;
 }
 
+/* Style de l'horloge digitale */
 .horloge-digital {
   font-size: 2.5em;
   margin: 5px 0;
@@ -46,6 +51,7 @@ body {
   text-align: center;
 }
 
+/* Style de la date */
 .affichage-date {
   color: white;
   font-size: 1.5em;
@@ -53,6 +59,7 @@ body {
   text-align: center;
 }
 
+/* Style des nombres d'heures */
 .nombre-heure {
   position: absolute;
   width: 35px;
@@ -71,36 +78,43 @@ body {
   transform-origin: center;
 }
 
-/* Ajustement des aiguilles et point central */
+/* Style des aiguilles */
 .aiguille {
   position: absolute;
   bottom: 50%;
   left: 50%;
-  transform-origin: bottom center; /* Corrigé */
+  transform-origin: bottom center;
   margin-left: -4px; /* Pour centrer l'aiguille */
 }
 
+/* Aiguille des heures */
 .aiguille-heure {
-  width: 10px;  /* Réduit de 8px à 7px */
+  width: 10px;
   height: 30%;
-  background: #ffffff;
+  background: #fff;
   border-radius: 5px;
+  border: #000 1px solid;
 }
 
+/* Aiguille des minutes */
 .aiguille-minute {
-  width: 7px;  /* Réduit de 6px à 5px */
+  width: 7px;
   height: 35%;
-  background: #000000;
+  background: #000;
   border-radius: 3px;
+  border: #fff 1px solid;
 }
 
+/* Aiguille des secondes */
 .aiguille-seconde {
-  width: 3px;  /* Réduit de 3px à 2px */
+  width: 3px;
   height: 40%;
   background: #f00;
   border-radius: 2px;
+  border: #fff 1px solid;
 }
 
+/* Point central de l'horloge */
 .centre-point {
   position: absolute;
   width: 20px;
@@ -110,10 +124,11 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 20; /* Pour que le point central soit au-dessus des aiguilles */
-   border: 2px solid white;
+  z-index: 20; /* Au-dessus des aiguilles */
+  border: 2px solid white;
 }
 
+/* Style des pictogrammes */
 .pictogramme {
   position: absolute;
   width: 30px;
@@ -122,7 +137,7 @@ body {
   pointer-events: none; /* Pour éviter les interférences avec les clics */
 }
 
-/* Conteneur du SVG avec fond blanc circulaire */
+/* Conteneur du SVG avec fond blanc */
 .pre-svg {
   width: 30px;
   height: 30px;
@@ -135,7 +150,7 @@ body {
   overflow: hidden;
 }
 
-/* Style pour les SVG à l'intérieur */
+/* Style pour les SVG */
 .pre-svg svg {
   width: 20px !important;
   height: 20px !important;
@@ -143,6 +158,7 @@ body {
   max-height: 20px;
 }
 
+/* Conteneur des jours de la semaine */
 .jour-container {
   display: flex;
   justify-content: center;
@@ -150,6 +166,7 @@ body {
   margin-top: 15px;
 }
 
+/* Style des boîtes de jour */
 .jour-box {
   width: 45px;
   height: 45px;
@@ -163,11 +180,13 @@ body {
   font-size: 14px;
 }
 
+/* Style du jour sélectionné (actuel) */
 .jour-box.selected {
   background: #fff;
   color: #333;
 }
 
+/* Style de la légende */
 .legend-container {
   position: fixed;
   bottom: 20px;
@@ -178,23 +197,27 @@ body {
   z-index: 30;
 }
 
+/* Style des éléments de légende */
 .legend-item {
   display: flex;
   align-items: center;
   margin: 5px 0;
 }
 
+/* Style des couleurs dans la légende */
 .legend-color {
   width: 20px;
   height: 20px;
   margin-right: 8px;
 }
 
+/* Style des labels dans la légende */
 .legend-label {
   font-size: 14px;
   color: #fff;
 }
 
+/* Style du cache de progression */
 .cache-horloge {
   position: absolute;
   width: 500px;

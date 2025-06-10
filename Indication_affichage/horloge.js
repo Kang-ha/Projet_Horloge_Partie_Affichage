@@ -1,34 +1,39 @@
+// Variable globale pour stocker l'instance du graphique en camembert
 var myPieChart;
+
+// Fonction pour initialiser l'horloge avec les périodes de la journée
 function horloge(labelNuit, nuit_debut_journee, nuit_fin_journee, couleurnuit, 
                  labelMatin, matin, couleurmatin,
                  labelMidi, midi, couleurmidi,
                  labelApresMidi, apres_midi, couleurApresMidi,
                  labelSoir, soir, couleursoir){    
+    // Données pour le graphique en camembert
     var data = {
-        labels: [labelNuit, labelMatin, labelMidi, labelApresMidi, labelSoir,labelNuit],
+        labels: [labelNuit, labelMatin, labelMidi, labelApresMidi, labelSoir, labelNuit],
         datasets: [{
             data: [nuit_debut_journee, matin, midi, apres_midi, soir, nuit_fin_journee],
             backgroundColor: [couleurnuit, couleurmatin, couleurmidi, couleurApresMidi, couleursoir, couleurnuit],
-            borderWidth: 0 // Aucune bordure entre les parties
+            borderWidth: 0 // Pas de bordure entre les sections
         }]
     };
-    // Configuration du camembert
+
+    // Options de configuration du graphique
     var options = {
-        responsive: false,
-        maintainAspectRatio: false,
+        responsive: false,          // Empêche le graphique de s'adapter automatiquement à la taille de l'écran ou de la fenêtre, cela signifie que le graphique conservera la taille spécifiée dans le <canvas> HTML.
+        maintainAspectRatio: false, // Désactive le maintien du ratio hauteur/largeur par défaut, cela permet de forcer une taille personnalisée (utile quand 'responsive' est false).
         plugins: {
             legend: {
-                display: false // Masquer la légende
+                display: false // Masque la légende
             },
             tooltip: {
-                enabled: false // Désactiver les info-bulles au survol
+                enabled: false // Désactive les infobulles
             }
         },
-        cutout: '0%', // Pour un pie chart plein
+        cutout: '0%', // Graphique plein (pas en anneau)
         circumference: 360 // Cercle complet
     };
 
-    // Création de la légende
+    // Crée la légende avec les couleurs et labels
     createLegend([
         {label: labelNuit, color: couleurnuit},
         {label: labelMatin, color: couleurmatin},
@@ -37,174 +42,103 @@ function horloge(labelNuit, nuit_debut_journee, nuit_fin_journee, couleurnuit,
         {label: labelSoir, color: couleursoir}
     ]);
 
-    // Récupération du contexte du canevas
+    // Récupère le contexte du canvas
     var ctx = document.getElementById("myPieChart").getContext('2d');
     
+    // Détruit l'ancien graphique s'il existe
     if (myPieChart) {
         myPieChart.destroy();   
     }
 
-    // Création du camembert
-    myPieChart = new Chart(ctx, {
-        type: 'pie', // Utiliser un diagramme en "pie"
-        data: data,
-        options: options
+    // Crée un nouveau graphique en camembert (pie chart) avec Chart.js
+    myPieChart = new Chart(ctx, {  // 'ctx' est le contexte du canevas HTML où le graphique sera dessiné (souvent obtenu via getContext('2d'))
+        type: 'pie',               // Spécifie que le type de graphique est un camembert (pie chart)
+        data: data,                // Les données à afficher dans le graphique (labels, datasets, etc.)
+        options: options           // Les options de configuration du graphique (titres, légendes, animations, etc.)
     });
 }
 
+// Fonction pour créer une légende
 function createLegend(items) {
-    // Supprimer l'ancienne légende si elle existe
+    // Supprime l'ancienne légende si elle existe
     const oldLegend = document.querySelector('.legend-container');
     if (oldLegend) oldLegend.remove();
 
+    // Crée un conteneur pour la légende
     const legendContainer = document.createElement('div');
     legendContainer.className = 'legend-container';
 
+    // Ajoute chaque élément de la légende
     items.forEach(item => {
         const legendItem = document.createElement('div');
         legendItem.className = 'legend-item';
 
+        // Boîte de couleur
         const colorBox = document.createElement('div');
         colorBox.className = 'legend-color';
         colorBox.style.backgroundColor = item.color;
 
+        // Label texte
         const label = document.createElement('span');
         label.className = 'legend-label';
         label.textContent = item.label;
 
+        // Assemble les éléments
         legendItem.appendChild(colorBox);
         legendItem.appendChild(label);
         legendContainer.appendChild(legendItem);
     });
 
+    // Ajoute la légende au conteneur principal
     document.querySelector('.horloge-container').appendChild(legendContainer);
 }
 
-function afficherHorloge() {
-    const matinElement = document.getElementById("titre_matin");
-    if (!matinElement) {
-        console.log("Les éléments des périodes ne sont pas encore chargés");
-        return;
-    }
-    titre_matin = document.getElementById("titre_matin").textContent;
-    debut_matin = document.getElementById("matin1").value;
-    debut_matin_minute = parseInt(debut_matin.split(":")[0])*60 + parseInt(debut_matin.split(":")[1]);
-    couleur_matin = document.getElementById("couleur_matin").value;
-
-    titre_midi = document.getElementById("titre_midi").textContent;
-    debut_midi = document.getElementById("midi1").value;
-    debut_midi_minute = parseInt(debut_midi.split(":")[0])*60 + parseInt(debut_midi.split(":")[1]);
-    couleur_midi = document.getElementById("couleur_midi").value;
-
-    titre_apresmidi = document.getElementById("titre_apres_midi").textContent;
-    debut_apresmidi = document.getElementById("apres_midi1").value;
-    debut_apresmidi_minute = parseInt(debut_apresmidi.split(":")[0])*60 + parseInt(debut_apresmidi.split(":")[1]);
-    couleur_apresmidi = document.getElementById("couleur_apres_midi").value;
-
-    titre_soir = document.getElementById("titre_soir").textContent;
-    debut_soir = document.getElementById("soir1").value;
-    debut_soir_minute = parseInt(debut_soir.split(":")[0])*60 + parseInt(debut_soir.split(":")[1]);
-    couleur_soir = document.getElementById("couleur_soir").value;
-
-    titre_nuit = document.getElementById("titre_nuit").textContent;
-    debut_nuit = document.getElementById("nuit1").value;
-    debut_nuit_minute = parseInt(debut_nuit.split(":")[0])*60 + parseInt(debut_nuit.split(":")[1]);
-    couleur_nuit = document.getElementById("couleur_nuit").value;
-
-    if (debut_matin_minute < debut_midi_minute && debut_midi_minute < debut_apresmidi_minute && debut_apresmidi_minute < debut_soir_minute && debut_soir_minute < debut_nuit_minute) {
-        duree_nuit_debut_journee = debut_matin_minute;
-        duree_matin = debut_midi_minute - debut_matin_minute;
-        duree_midi = debut_apresmidi_minute - debut_midi_minute;
-        duree_apresmidi = debut_soir_minute - debut_apresmidi_minute;
-        duree_soir = debut_nuit_minute - debut_soir_minute;
-        duree_nuit_fin_journee = 1440 - debut_nuit_minute;
-
-        //console.log([titre_nuit, titre_matin, titre_midi, titre_apresmidi, titre_soir, titre_nuit]);
-        //console.log([duree_nuit_debut_journee, duree_matin, duree_midi, duree_apresmidi, duree_soir, duree_nuit_fin_journee]);
-        //console.log([couleur_nuit, couleur_matin, couleur_midi, couleur_apresmidi, couleur_soir, couleur_nuit]);
-
-        // update les données
-        myPieChart.data.labels = [titre_nuit, titre_matin, titre_midi, titre_apresmidi, titre_soir, titre_nuit];
-        myPieChart.data.datasets[0].data = [duree_nuit_debut_journee, duree_matin, duree_midi, duree_apresmidi, duree_soir, duree_nuit_fin_journee];
-        myPieChart.data.datasets[0].backgroundColor = [couleur_nuit, couleur_matin, couleur_midi, couleur_apresmidi, couleur_soir, couleur_nuit];
-        myPieChart.update();
-
-        $.ajax({
-            type: "POST",
-            url: "bdd.php",
-            data: {
-                action: 'updateHoraireHorloge',
-                matin1: debut_matin,
-                couleur_matin: couleur_matin,
-                midi1: debut_midi,
-                couleur_midi: couleur_midi,
-                apres_midi1: debut_apresmidi,
-                couleur_apres_midi: couleur_apresmidi,
-                soir1: debut_soir,update
-            },
-            success: function(response) {
-                // Fonction à exécuter lorsque la requête réussit
-                //console.log("Requête réussie !");
-                // console.log(response); // Affiche la réponse renvoyée par le serveur
-            },
-            error: function(xhr, status, error) {
-                // Fonction à exécuter en cas d'erreur de la requête
-                console.error("Erreur lors de la requête :", error);
-            }
-        });
-    } else {
-        document.getElementById("Periodes_err").textContent = "Vérifier le début de chaque périodes";
-        document.getElementById("Periodes_err").style.border = "red solid 1px";
-        setTimeout(function() {
-            // Permet d'éffacer le message apres 5 seconde
-            document.getElementById("Periodes_err").textContent = "";
-            document.getElementById("Periodes_err").style.border = "";
-        }, 5000);
-    }
-}
-
+// Fonction pour afficher les nombres d'heures autour de l'horloge
 function nombreHeureHorloge() {
     const horlogeFace = $('.horloge-face');
-    const rayon = 280; // Augmenté de 150 à 160
+    const rayon = 280; // Rayon du cercle des nombres
 
-    // Supprimer les anciens nombres s'ils existent
+    // Supprime les anciens nombres
     $('.nombre-heure').remove();
 
-    // Ajouter les nombres 1-24
+    // Ajoute les nombres de 1 à 24
     for (let i = 1; i <= 24; i++) {
-        const angle = (i * 15) - 90; // 15 degrés par heure (360/24)
-        const radian = (angle * Math.PI) / 180;
+        const angle = (i * 15) - 90; // Angle en degrés (15° par heure)
+        const radian = (angle * Math.PI) / 180; // Conversion en radians
         
-        // Calculer les positions x et y
+        // Calcul des positions x et y
         const x = Math.cos(radian) * rayon;
         const y = Math.sin(radian) * rayon;
         
-        const nombreDiv = $('<div>')
-            .addClass('nombre-heure')
-            .text(i === 24 ? 0 : i)
-            .css({
-                'left': `${250 + x}px`,        // Centre à 180px + décalage
-                'top': `${250 + y}px`,         // Centre à 180px + décalage  
-                'transform': `translate(-50%, -50%)` // Centrage précis
+        // Crée un élément div pour le nombre
+        const nombreDiv = $('<div>')          // Crée un nouvel élément <div> avec jQuery
+            .addClass('nombre-heure')         // Ajoute une classe CSS appelée 'nombre-heure' (utile pour le style)
+            .text(i === 24 ? 0 : i)           // Définit le texte affiché dans le div : si i vaut 24, on affiche 0, sinon on affiche i (utile pour représenter les heures sur une horloge de 24h, où 24 = 0h)
+            .css({                            // Applique des styles CSS directement à l'élément :
+                'left': `${250 + x}px`,       // Position horizontale en pixels, décalée à partir du centre (250 + x)
+                'top': `${250 + y}px`,        // Position verticale en pixels, également décalée du centre
+                'transform': `translate(-50%, -50%)` // Centre le div sur ses coordonnées (utile pour un positionnement précis en cercle)
             });
 
+        // Ajoute le nombre à la face de l'horloge
         horlogeFace.append(nombreDiv);
     }
 }
 
+// Fonction pour mettre à jour l'horloge (analogique et digitale)
 function majHorlogeSimple() {
     const now = new Date();
     console.log("Mise à jour de l'horloge avec:", now);
 
-    // Format de l'heure (24h)
+    // Formatage de l'heure
     const timeStr = now.toLocaleTimeString('fr-FR', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
+        hour: '2-digit',       // Affiche l'heure sur 2 chiffres (ex : "08" au lieu de "8")
+        minute: '2-digit',     // Affiche les minutes sur 2 chiffres
+        second: '2-digit',     // Affiche les secondes sur 2 chiffres
         hour12: false
     });
 
-    // Format de la date personnalisé
+    // Formatage de la date
     const dateStr = now.toLocaleDateString('fr-FR', {
         weekday: 'long',
         year: 'numeric',
@@ -215,74 +149,73 @@ function majHorlogeSimple() {
     console.log("Heure formatée:", timeStr);
     console.log("Date formatée:", dateStr);
 
-    // Mise à jour directe de l'affichage
+    // Met à jour l'affichage digital
     document.querySelector('.horloge-digital').textContent = timeStr;
     document.querySelector('.affichage-date').textContent = dateStr;
 
-    // Calculs pour l'horloge analogique
+    // Récupère les heures, minutes, secondes
     const hours = now.getHours();
     const minutes = now.getMinutes();
     const seconds = now.getSeconds();
 
-    // Calcul des angles
-    const hourDeg = (hours * 15) + (minutes * 0.25);
-    const minuteDeg = minutes * 6;
-    const secondDeg = seconds * 6;
+    // Calcule les angles pour les aiguilles
+    const hourDeg = (hours * 15) + (minutes * 0.25); // 15° par heure + 0.25° par minute
+    const minuteDeg = minutes * 6; // 6° par minute
+    const secondDeg = seconds * 6; // 6° par seconde
 
-    // Mise à jour des aiguilles
+    // Applique la rotation aux aiguilles
     document.querySelector('.aiguille-heure').style.transform = `rotate(${hourDeg}deg)`;
     document.querySelector('.aiguille-minute').style.transform = `rotate(${minuteDeg}deg)`;
     document.querySelector('.aiguille-seconde').style.transform = `rotate(${secondDeg}deg)`;
 
-    // Sélectionner le jour actuel
-    const dayIndex = now.getDay(); // 0=Lundi, 6=Dimanche; // 0 (Dimanche) à 6 (Samedi)
+    // Met en surbrillance le jour actuel
+    const dayIndex = now.getDay(); // 0=Dimanche, 6=Samedi
     $('.jour-box').removeClass('selected');
-    $(`#jour-${(dayIndex + 6) % 7}`).addClass('selected'); // Ajustement pour commencer à Lundi
+    $(`#jour-${(dayIndex + 6) % 7}`).addClass('selected'); // Ajuste pour commencer à Lundi
 
+    // Met à jour le cache de progression
     updateCache(now);
 }
 
+// Initialisation lorsque le document est prêt
 $(document).ready(function() {
     console.log("Document ready");
-    nombreHeureHorloge();
-    setInterval(majHorlogeSimple, 1000);
-    setInterval(afficherHorloge, 5000);
-
+    nombreHeureHorloge(); // Affiche les nombres d'heures
+    setInterval(majHorlogeSimple, 1000); // Met à jour l'horloge toutes les secondes
 });
 
+// Fonction pour positionner un pictogramme sur l'horloge
 function pictogramme(id_picto, minuteDebut, minuteFin){
     var div_pictogramme = document.getElementById("div-picto"+id_picto);
     var pictogramme = document.getElementById("div-picto"+id_picto).getElementsByTagName("svg")[0];
     
-    // Conversion des minutes en heures
+    // Convertit les minutes en heures
     var heureDebut = minuteDebut / 60;
     var heureFin = minuteFin / 60;
     
-    // Position au milieu de l'événement
+    // Calcule l'heure moyenne de l'événement
     var heureMoyenne = heureDebut + (heureFin - heureDebut) / 2;
     
-    // Calcul de l'angle en degrés (0° = minuit en haut, sens horaire)
-    // Pour une horloge 24h : chaque heure = 15° (360° / 24h)
+    // Calcule l'angle en degrés (0° = minuit, sens horaire)
     var angleDegres = (heureMoyenne * 15) - 90; // -90 pour commencer à minuit en haut
     
-    // Rayon pour positionner les pictogrammes (même que les nombres d'heures)
-    var rayon = 220; // Ajusté pour être entre le centre et le bord
+    var rayon = 220; // Rayon pour positionner les pictogrammes
     
-    // Conversion en radians pour les calculs trigonométriques
+    // Conversion en radians
     var angleRadians = (angleDegres * Math.PI) / 180;
     
-    // Calcul des positions x et y
+    // Calcule les positions x et y
     var x = Math.cos(angleRadians) * rayon;
     var y = Math.sin(angleRadians) * rayon;
     
-    // Positionnement du conteneur du pictogramme
+    // Positionne le pictogramme
     div_pictogramme.style.position = "absolute";
     div_pictogramme.style.left = (250 + x) + "px"; // 250 = centre de l'horloge
     div_pictogramme.style.top = (250 + y) + "px";
-    div_pictogramme.style.transform = "translate(-50%, -50%)"; // Centrage
+    div_pictogramme.style.transform = "translate(-50%, -50%)";
     div_pictogramme.style.transformOrigin = "center";
     
-    // S'assurer que le pictogramme reste droit (pas de rotation du contenu)
+    // Garde le pictogramme droit
     if (pictogramme) {
         pictogramme.style.transform = "rotate(0deg)";
         pictogramme.style.width = "100%";
@@ -290,6 +223,7 @@ function pictogramme(id_picto, minuteDebut, minuteFin){
     }
 }
 
+// Fonction pour afficher les pictogrammes via AJAX
 function afficherPictogrammes(){
     var afficherPictogrammes = document.getElementById("afficherPictogrammes");
     var afficherpictogrammes = $('#afficherPictogrammes');
@@ -300,27 +234,33 @@ function afficherPictogrammes(){
             action: 'afficherPictogrammes'
         },
         success: function(response) {
+            // Met à jour le contenu avec la réponse
             afficherPictogrammes.innerHTML = '';
             afficherPictogrammes.innerHTML = response;
+            // Exécute les scripts inclus dans la réponse
             afficherpictogrammes.find('script').each(function() {
                 eval(this.innerHTML);
             });
             updateHorlogeEvent();
         },
-        error: function(xhr, status, error) {+                                             
-            console.error("Erreur lors de la requéte :", error);
+        error: function(xhr, status, error) {                                             
+            console.error("Erreur lors de la requête :", error);
         }
     });
 }
 
+// Fonction pour mettre à jour le cache de progression du temps
 function updateCache(now) {
     const cache = document.getElementById('cacheHorloge');
     const hours = now.getHours();
     const minutes = now.getMinutes();
     const seconds = now.getSeconds();
 
+    // Calcule le temps total en minutes
     const totalMinutes = (hours * 60) + minutes + (seconds / 60);
+    // Calcule l'angle correspondant
     const angle = (totalMinutes / (24 * 60)) * 360;
 
+    // Met à jour l'angle du cache
     cache.style.setProperty('--angle-cache', `${angle}deg`);
 }
