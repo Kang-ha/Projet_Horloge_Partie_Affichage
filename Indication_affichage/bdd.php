@@ -51,6 +51,7 @@
     /*****************************************************************************/
     /*                                  FONCTION                                 */
     /*****************************************************************************/
+    
     // Fonction pour afficher l'horloge avec les périodes de la journée
     function afficherHorloge(){
         global $lien;

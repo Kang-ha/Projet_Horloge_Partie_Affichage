@@ -56,41 +56,8 @@ function horloge(labelNuit, nuit_debut_journee, nuit_fin_journee, couleurnuit,
         data: data,                // Les données à afficher dans le graphique (labels, datasets, etc.)
         options: options           // Les options de configuration du graphique (titres, légendes, animations, etc.)
     });
-}
-
-// Fonction pour créer une légende
-function createLegend(items) {
-    // Supprime l'ancienne légende si elle existe
-    const oldLegend = document.querySelector('.legend-container');
-    if (oldLegend) oldLegend.remove();
-
-    // Crée un conteneur pour la légende
-    const legendContainer = document.createElement('div');
-    legendContainer.className = 'legend-container';
-
-    // Ajoute chaque élément de la légende
-    items.forEach(item => {
-        const legendItem = document.createElement('div');
-        legendItem.className = 'legend-item';
-
-        // Boîte de couleur
-        const colorBox = document.createElement('div');
-        colorBox.className = 'legend-color';
-        colorBox.style.backgroundColor = item.color;
-
-        // Label texte
-        const label = document.createElement('span');
-        label.className = 'legend-label';
-        label.textContent = item.label;
-
-        // Assemble les éléments
-        legendItem.appendChild(colorBox);
-        legendItem.appendChild(label);
-        legendContainer.appendChild(legendItem);
-    });
-
-    // Ajoute la légende au conteneur principal
-    document.querySelector('.horloge-container').appendChild(legendContainer);
+    // Ajoute le soleil et la lune après la création du graphique
+    addSunAndMoon(nuit_debut_journee, matin, midi, apres_midi, soir, nuit_fin_journee);
 }
 
 // Fonction pour afficher les nombres d'heures autour de l'horloge
@@ -241,7 +208,6 @@ function afficherPictogrammes(){
             afficherpictogrammes.find('script').each(function() {
                 eval(this.innerHTML);
             });
-            updateHorlogeEvent();
         },
         error: function(xhr, status, error) {                                             
             console.error("Erreur lors de la requête :", error);
@@ -263,4 +229,104 @@ function updateCache(now) {
 
     // Met à jour l'angle du cache
     cache.style.setProperty('--angle-cache', `${angle}deg`);
+}
+
+// Fonction pour ajouter le soleil et la lune sur le camembert
+function addSunAndMoon(nuit_debut_journee, matin, midi, apres_midi, soir, nuit_fin_journee) {
+    // Supprime les anciens éléments s'ils existent
+    const oldSun = document.querySelector('.sun-icon');
+    const oldMoon = document.querySelector('.moon-icon');
+    if (oldSun) oldSun.remove();
+    if (oldMoon) oldMoon.remove();
+
+    const horlogeFace = document.querySelector('.horloge-face');
+    const rayon = 200; // Rayon pour positionner les icônes
+
+    // Calcul de l'angle pour le lever du soleil (transition nuit -> matin)
+    const debutMatin = nuit_debut_journee; // fin de la nuit du début = début du matin
+    const angleMatin = (debutMatin / 24) * 360 - 90; // -90 pour commencer à minuit en haut
+    const angleMatinRadians = (angleMatin * Math.PI) / 180;
+    
+    // Calcul de l'angle pour la lune (transition soir -> nuit de fin)
+    const finSoir = nuit_debut_journee + matin + midi + apres_midi + soir;
+    const angleLune = (finSoir / 24) * 360 - 90; // Position à la fin du soir (début de la nuit de fin)
+    const angleLuneRadians = (angleLune * Math.PI) / 180;
+
+    // Position du soleil
+    const xSoleil = Math.cos(angleMatinRadians) * rayon;
+    const ySoleil = Math.sin(angleMatinRadians) * rayon;
+
+    // Position de la lune
+    const xLune = Math.cos(angleLuneRadians) * rayon;
+    const yLune = Math.sin(angleLuneRadians) * rayon;
+
+    // Création du soleil avec SVG
+    const soleil = document.createElement('div');
+    soleil.className = 'sun-icon';
+    soleil.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="4" fill="#FFD700" stroke="#FFA500" stroke-width="1"/>
+            <path d="M12 2V4M12 20V22M4.93 4.93L6.34 6.34M17.66 17.66L19.07 19.07M2 12H4M20 12H22M4.93 19.07L6.34 17.66M17.66 6.34L19.07 4.93" stroke="#FFA500" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+    `;
+    soleil.style.position = 'absolute';
+    soleil.style.left = `${250 + xSoleil}px`;
+    soleil.style.top = `${250 + ySoleil}px`;
+    soleil.style.transform = 'translate(-50%, -50%)';
+    soleil.style.zIndex = '30';
+    soleil.style.filter = 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.8))';
+
+    // Création de la lune avec SVG
+    const lune = document.createElement('div');
+    lune.className = 'moon-icon';
+    lune.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="#E6E6FA" stroke="#C0C0C0" stroke-width="1"/>
+        </svg>
+    `;
+    lune.style.position = 'absolute';
+    lune.style.left = `${250 + xLune}px`;
+    lune.style.top = `${250 + yLune}px`;
+    lune.style.transform = 'translate(-50%, -50%)';
+    lune.style.zIndex = '30';
+    lune.style.filter = 'drop-shadow(0 0 8px rgba(230, 230, 250, 0.8))';
+
+    // Ajoute les éléments à la face de l'horloge
+    horlogeFace.appendChild(soleil);
+    horlogeFace.appendChild(lune);
+}
+
+// Fonction pour créer une légende
+function createLegend(items) {
+    // Supprime l'ancienne légende si elle existe
+    const oldLegend = document.querySelector('.legend-container');
+    if (oldLegend) oldLegend.remove();
+
+    // Crée un conteneur pour la légende
+    const legendContainer = document.createElement('div');
+    legendContainer.className = 'legend-container';
+
+    // Ajoute chaque élément de la légende
+    items.forEach(item => {
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+
+        // Boîte de couleur
+        const colorBox = document.createElement('div');
+        colorBox.className = 'legend-color';
+        colorBox.style.backgroundColor = item.color;
+
+        // Label texte
+        const label = document.createElement('span');
+        label.className = 'legend-label';
+        label.textContent = item.label;
+
+        // Assemble les éléments
+        legendItem.appendChild(colorBox);
+        legendItem.appendChild(label);
+        legendContainer.appendChild(legendItem);
+    });
+
+    // Ajoute la légende au conteneur principal
+    document.querySelector('.horloge-container').appendChild(legendContainer);
 }
