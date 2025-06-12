@@ -6,50 +6,50 @@
 
 // Configuration détaillée
 $config = [
-    'source' => [
-        'host' => '192.168.1.6', // Adresse du serveur maître
-        'port' => 3306,        // Port MySQL
-        'username' => 'admineleve',
-        'password' => 'ieufdl',
-        'database' => 'projet_horloge',
-        'charset' => 'utf8mb4'
+    'source' => [  // Configuration du serveur source
+        'host' => '192.168.1.6', // Adresse IP du serveur source
+        'port' => 3306,        // Port MySQL standard
+        'username' => 'admineleve', // Nom d'utilisateur pour la connexion
+        'password' => 'ieufdl', // Mot de passe pour la connexion
+        'database' => 'projet_horloge', // Nom de la base de données
+        'charset' => 'utf8mb4' // Encodage des caractères
     ],
-    'target' => [
-        'host' => '192.168.1.9', // Adresse du serveur esclave
+    'target' => [  // Configuration du serveur cible
+        'host' => '192.168.1.9', // Adresse IP du serveur cible
         'port' => 3306,
-        'username' => 'root',
+        'username' => 'root', // Utilisation du compte root (attention à la sécurité)
         'password' => 'horloge',
         'database' => 'projet_horloge',
         'charset' => 'utf8mb4'
     ],
-    'sync_rules' => [
-        'pictogrammes' => [
-            'strategy' => 'full',
-            'key_field' => 'id'
+    'sync_rules' => [  // Règles de synchronisation par table
+        'pictogrammes' => [  // Table des pictogrammes
+            'strategy' => 'full', // Synchronisation complète de la table
+            'key_field' => 'id'   // Champ clé pour identifier les enregistrements
         ],
-        'evenements' => [
-            'strategy' => 'partial',
-            'filter_field' => 'id_utilisateur',
-            'filter_value' => 70,
-            'key_field' => 'id'
+        'evenements' => [  // Table des événements
+            'strategy' => 'partial', // Synchronisation partielle
+            'filter_field' => 'id_utilisateur', // Champ de filtrage
+            'filter_value' => 70,     // Valeur de filtrage (seulement pour utilisateur 70)
+            'key_field' => 'id'       // Champ clé
         ],
-        'periodes' => [
+        'periodes' => [  // Table des périodes
             'strategy' => 'partial',
             'filter_field' => 'id_configuration',
-            'filter_value' => 9,
+            'filter_value' => 9,      // Seulement pour configuration 9
             'key_field' => 'id'
         ]
     ],
-    'options' => [
+    'options' => [  // Options générales
         'create_database' => true, // Crée la BDD si elle n'existe pas
         'create_tables' => true,   // Crée les tables si elles n'existent pas
-        'max_retries' => 3,        // Nombre de tentatives de connexion
-        'retry_delay' => 2         // Délai entre les tentatives en secondes
+        'max_retries' => 3,        // Nombre max de tentatives de connexion
+        'retry_delay' => 2         // Délai entre tentatives en secondes
     ]
 ];
 
 // Journalisation
-$logFile = __DIR__ . '/sync_log_' . date('Y-m-d') . '.log';
+$logFile = __DIR__ . '/sync_log_' . date('Y-m-d') . '.log';        // Fichier de log avec date
 function logMessage($message) {
     global $logFile;
     $timestamp = date('[Y-m-d H:i:s]');
@@ -69,18 +69,18 @@ function connectWithRetry($host, $port, $username, $password, $dbname = null, $o
     for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
         try {
             $pdo = new PDO($dsn, $username, $password, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,        // Gestion des erreurs
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,   // Format de récupération
+                PDO::ATTR_EMULATE_PREPARES => false                 // Désactive l'émulation des requêtes préparées
             ]);
             logMessage("Connexion réussie à  $host (tentative $attempt/$maxRetries)");
             return $pdo;
         } catch (PDOException $e) {
             logMessage("échec de connexion (tentative $attempt/$maxRetries): " . $e->getMessage());
             if ($attempt < $maxRetries) {
-                sleep($retryDelay);
+                sleep($retryDelay);        // Pause avant nouvelle tentative
             } else {
-                throw $e;
+                throw $e;            // Relance l'exception après dernier échec
             }
         }
     }
