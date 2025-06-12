@@ -7,7 +7,7 @@
 // Configuration détaillée
 $config = [
     'source' => [
-        'host' => '192.168.1.5', // Adresse du serveur maître
+        'host' => '192.168.1.6', // Adresse du serveur maître
         'port' => 3306,        // Port MySQL
         'username' => 'admineleve',
         'password' => 'ieufdl',
