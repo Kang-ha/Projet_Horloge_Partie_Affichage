@@ -49,7 +49,7 @@ const std::string TOPIC_DIFFUSEUR{"horloge/olfactive/diffuseur"}; // Topic pour 
 const std::string TOPIC_PRESENCE{"horloge/olfactive/presence"};   // Topic pour détection de présence
 
 // Configuration Tapo
-const std::string IP = "192.168.1.5";                     // IP de la prise connectée
+const std::string IP = "192.168.1.4";                     // IP de la prise connectée
 const std::string USER = "boutin.l@stjolorient.fr";         // Identifiant de connexion Tapo
 const std::string PASS = "Voso1295";                        // Mot de passe Tapo
 
